@@ -1,3 +1,43 @@
 spring:
   application:
-    name: fdx-backend
+    name: fdx-backend # 어플리케이션 이름
+
+  # H2 데이터베이스 설정 (개발용)
+  datasource:
+    url: jdbc:h2:mem:fdxdb # 종료시 데이터 휘발, 개발/테스트용
+    driver-class-name: org.h2.Driver # DB 서버 통신 프로토콜 구현체
+    username: sa
+    password:
+
+  # H2 콘솔 활성화 (브라우저에서 DB 확인용)
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  # JPA 설정
+  jpa:
+    hibernate:
+      ddl-auto: create-drop # 애플리케이션 시작시 테이블 자동 생성, 종료 시 삭제 (개발/연습용)
+    show-sql: true  # SQL 쿼리 콘솔 출력
+    properties:
+      hibernate:
+        format_sql: true  # SQL 포맷팅, 들여쓰기 잘해서 쿼리 콘솔에 출력
+        dialect: org.hibernate.dialect.H2Dialect # 어떤 DB용 SQL 문법을 쓸 건지 설정
+
+  # 한글 깨짐 방지
+  messages:
+    encoding: UTF-8 # 스프링이 “메시지 파일”을 UTF-8로 읽게 하는 옵션
+
+server:
+  port: 8080 # 어느 포트로 뜰지
+
+
+# 로깅 설정
+logging:
+  level: # 어떤 패키지(혹은 클래스)에 대해 로그를 얼마나 자세히 찍을지 레벨을 정하는 설정
+    com.fdx.backend: DEBUG  # 내 프로젝트 코드에서 찍는 로그를 DEBUG 이상부터 다 찍어라
+    org.hibernate.SQL: DEBUG  # Hibernate가 만드는 쿼리(SQL)를 로그로 보고 싶다
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE # SQL에 바인딩되는 실제 파라미터 값을 보고 싶을 때
+
+
