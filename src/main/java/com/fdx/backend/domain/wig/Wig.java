@@ -1,0 +1,86 @@
+package com.fdx.backend.domain.wig;
+
+import com.fdx.backend.domain.MeasureType;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+/**
+ * WIG (Wildly Important Goal) 엔티티
+ * 4DX의 핵심 목표를 나타냅니다
+ */
+@Entity // jpa 엔티티임을 선언. jpa가 조회함
+@Table(name = "wigs") // 매핑될 테이블명
+@Getter // jpa는 getter를 이용한 프록시 접근도 많음
+@Setter // 프로토타입때 사용하다 나중에 리팩토링
+@NoArgsConstructor // JPA가 엔티티를 프록시로 생성할 때, 파라미터 없는 기본 생성자가 필요
+@AllArgsConstructor // 필수는 아님. 테스트시 사용
+@Builder // 안정적이고 가독성 높은 객체 생성 방식 제공
+public class Wig {
+
+    @Id // 이 필드가 PK
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto_increment로 생성되는 PK. insert할때 id코드 안넣어도 알아서 1,2,3... 증가값 생성
+    private Long id;
+
+    @Column(nullable = false, length = 200)
+    private String title;   // 목표 제목 (예: "백엔드 개발자 취업")
+
+    @Column(nullable = false, length = 100)
+    private String fromX;  // 시작 상태 (예: "백수" 또는 "75")
+
+    @Column(nullable = false, length = 100)
+    private String toY;   // 목표 상태 (예: "취업 성공" 또는 "68")
+
+    @Column(nullable = false)
+    private LocalDate byWhen;  // 목표 달성 기한
+
+    @Enumerated(EnumType.STRING) //ENUM 이름 그대로("NUMERIC", "STATE")를 DB에 저장하라. 이거안쓰면 0,1,2...
+    @Column(nullable = false)
+    private MeasureType measureType;  // 측정 유형 (NUMERIC/STATE)
+
+    @Column(length = 20)
+    private String unit;   // 단위 (measureType이 NUMERIC일 때만 사용, 예: "kg", "원")
+
+    @CreationTimestamp // INSERT시 자동으로 현재 시간 기록
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp // UPDATE시 자동으로 현재 시간 갱신
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
+    /**
+     * NUMERIC 타입 WIG 생성용 팩토리 메서드
+     */
+    public static Wig createNumericWig(String title, String fromX, String toY,
+                                   LocalDate byWhen, String unit) {
+
+        return Wig.builder() // 빌더 : 생성자 많을 때, 무슨필드인지 가독성up. 필드누락이나 순서 실수 방지
+                .title(title)
+                .fromX(fromX)
+                .toY(toY)
+                .byWhen(byWhen)
+                .measureType(MeasureType.NUMERIC)
+                .unit(unit)
+                .build();
+    }
+
+    /**
+     * STATE 타입 WIG 생성용 팩토리 메서드
+     */
+    public static Wig createStateWig(String title, String fromX,
+                                     String toY, LocalDate byWhen) {
+        return Wig.builder()
+                .title(title)
+                .fromX(fromX)
+                .toY(toY)
+                .byWhen(byWhen)
+                .measureType(MeasureType.STATE)
+                .build();
+
+    }
+}
