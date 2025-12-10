@@ -26,11 +26,6 @@ spring:
         dialect: org.hibernate.dialect.H2Dialect # 어떤 DB용 SQL 문법을 쓸 건지 설정
     defer-datasource-initialization: true
 
-  # SQL 초기화 설정
-  sql:
-    init:
-      mode: always  # data.sql 항상 실행
-
   # 한글 깨짐 방지
   messages:
     encoding: UTF-8 # 스프링이 “메시지 파일”을 UTF-8로 읽게 하는 옵션
