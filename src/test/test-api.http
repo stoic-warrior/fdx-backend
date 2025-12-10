@@ -1,0 +1,122 @@
+### 4DX Backend API 테스트
+### IntelliJ HTTP Client
+### 사용법: 각 요청 옆의 ▶️ 버튼을 클릭하여 실행
+
+### 1. 모든 WIG 조회
+GET http://localhost:8080/api/wigs
+Accept: application/json
+
+### 2. WIG 개수 조회
+GET http://localhost:8080/api/wigs/count
+Accept: application/json
+
+### 3. WIG 생성 - 상태형 (백엔드 취업)
+POST http://localhost:8080/api/wigs
+Content-Type: application/json
+
+{
+  "title": "백엔드 개발자 취업",
+  "fromX": "백수",
+  "toY": "취업 성공",
+  "byWhen": "2025-12-31",
+  "measureType": "STATE"
+}
+
+### 4. WIG 생성 - 수치형 (체중 감량)
+POST http://localhost:8080/api/wigs
+Content-Type: application/json
+
+{
+  "title": "체중 감량",
+  "fromX": "75",
+  "toY": "68",
+  "byWhen": "2025-06-30",
+  "measureType": "NUMERIC",
+  "unit": "kg"
+}
+
+### 5. WIG 생성 - 3번째 시도 (실패해야 함 - 최대 2개 제한)
+POST http://localhost:8080/api/wigs
+Content-Type: application/json
+
+{
+  "title": "영어 회화 향상",
+  "fromX": "기초",
+  "toY": "고급",
+  "byWhen": "2025-09-30",
+  "measureType": "STATE"
+}
+
+### 6. WIG 수정 - ID 1번
+PUT http://localhost:8080/api/wigs/1
+Content-Type: application/json
+
+{
+  "title": "백엔드 개발자 취업 (수정됨)",
+  "fromX": "백수",
+  "toY": "대기업 합격",
+  "byWhen": "2025-12-31",
+  "measureType": "STATE"
+}
+
+### 7. WIG 수정 - 수치형 단위 변경
+PUT http://localhost:8080/api/wigs/2
+Content-Type: application/json
+
+{
+  "title": "체중 감량",
+  "fromX": "75",
+  "toY": "65",
+  "byWhen": "2025-06-30",
+  "measureType": "NUMERIC",
+  "unit": "kg"
+}
+
+### 8. WIG 삭제 - ID 1번
+DELETE http://localhost:8080/api/wigs/1
+
+### 9. WIG 삭제 - ID 2번
+DELETE http://localhost:8080/api/wigs/2
+### 9. WIG 삭제 - ID 2번
+DELETE http://localhost:8080/api/wigs/3
+### 9. WIG 삭제 - ID 2번
+DELETE http://localhost:8080/api/wigs/4
+
+### 10. 존재하지 않는 WIG 수정 시도 (실패해야 함)
+PUT http://localhost:8080/api/wigs/999
+Content-Type: application/json
+
+{
+  "title": "존재하지 않는 WIG",
+  "fromX": "A",
+  "toY": "B",
+  "byWhen": "2025-12-31",
+  "measureType": "STATE"
+}
+
+### 11. 존재하지 않는 WIG 삭제 시도 (실패해야 함)
+DELETE http://localhost:8080/api/wigs/999
+
+### 12. 유효성 검증 실패 - 필수 필드 누락 (실패해야 함)
+POST http://localhost:8080/api/wigs
+Content-Type: application/json
+
+{
+  "title": "",
+  "fromX": "A",
+  "toY": "B"
+}
+
+### 13. 유효성 검증 실패 - NUMERIC 타입인데 unit 없음 (실패해야 함)
+POST http://localhost:8080/api/wigs
+Content-Type: application/json
+
+{
+  "title": "테스트",
+  "fromX": "0",
+  "toY": "100",
+  "byWhen": "2025-12-31",
+  "measureType": "NUMERIC"
+}
+
+###
