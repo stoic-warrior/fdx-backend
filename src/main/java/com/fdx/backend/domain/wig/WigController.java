@@ -23,10 +23,10 @@ import java.util.Map;
  * PUT    /api/wigs/{id}      - WIG 수정
  * DELETE /api/wigs/{id}      - WIG 삭제
  */
-@RestController
-@RequestMapping("/api/wigs")
-@RequiredArgsConstructor
-@Slf4j
+@RestController // @RestController = @Controller + @ResponseBody
+@RequestMapping("/api/wigs") // @RequestMapping: 모든 메서드의 기본 경로를 /api/wigs로 설정
+@RequiredArgsConstructor // final 필드 생성자 주입 (서비스 필드)
+@Slf4j // 로깅 객체(log)를 자동 생성 ㅡ> log.info 사용가능
 public class WigController {
 
     private final WigService wigService;
