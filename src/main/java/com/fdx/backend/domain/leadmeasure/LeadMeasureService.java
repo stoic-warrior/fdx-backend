@@ -1,6 +1,7 @@
 package com.fdx.backend.domain.leadmeasure;
 
 import com.fdx.backend.domain.wig.WigRepository;
+import com.fdx.backend.dto.LeadMeasureRequest;
 import com.fdx.backend.dto.LeadMeasureResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,13 @@ public class LeadMeasureService {
         return leadMeasureRepository.findByWigId(wigId).stream()
                 .map(LeadMeasureResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Lead Measure 생성
+     */
+    @Transactional
+    public LeadMeasureResponse createLeadMeasure(LeadMeasureRequest leadMeasureRequest) {
 
     }
 }
