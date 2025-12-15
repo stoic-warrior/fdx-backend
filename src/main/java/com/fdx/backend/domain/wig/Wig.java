@@ -1,6 +1,7 @@
 package com.fdx.backend.domain.wig;
 
 import com.fdx.backend.domain.MeasureType;
+import com.fdx.backend.domain.leadmeasure.LeadMeasure;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -8,6 +9,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * WIG (Wildly Important Goal) 엔티티
@@ -45,6 +48,15 @@ public class Wig {
     @Column(length = 20)
     private String unit;   // 단위 (measureType이 NUMERIC일 때만 사용, 예: "kg", "원")
 
+    /**
+     * Lead Measures (선행지표) - 양방향 관계
+     * cascade: WIG 삭제 시 Lead Measures도 함께 삭제
+     * orphanRemoval: 컬렉션에서 제거된 Lead Measure 자동 삭제
+     */
+    @OneToMany(mappedBy = "wig", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<LeadMeasure> leadMeasures = new ArrayList<>();
+
     @CreationTimestamp // INSERT시 자동으로 현재 시간 기록
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -52,6 +64,24 @@ public class Wig {
     @UpdateTimestamp // UPDATE시 자동으로 현재 시간 갱신
     @Column(nullable = false)
     private LocalDateTime updatedAt;
+
+    /**
+     * 편의 메서드: Lead Measure 추가
+     * 양방향 관계 동기화
+     */
+    public void addLeadMeasure(LeadMeasure leadMeasure) {
+        leadMeasures.add(leadMeasure);
+        leadMeasure.setWig(this);
+    }
+
+    /**
+     * 편의 메서드: Lead Measure 제거
+     * 양방향 관계 동기화
+     */
+    public void removeLeadMeasure(LeadMeasure leadMeasure) {
+        leadMeasures.remove(leadMeasure);
+        leadMeasure.setWig(null); // FK를 들고 있는쪽에서 파괴할때 orphanRemoval = true 발동
+    }
 
     /**
      * NUMERIC 타입 WIG 생성용 팩토리 메서드
@@ -66,6 +96,7 @@ public class Wig {
                 .byWhen(byWhen)
                 .measureType(MeasureType.NUMERIC)
                 .unit(unit)
+                .leadMeasures(new ArrayList<>())
                 .build();
     }
 
@@ -80,6 +111,7 @@ public class Wig {
                 .toY(toY)
                 .byWhen(byWhen)
                 .measureType(MeasureType.STATE)
+                .leadMeasures(new ArrayList<>())
                 .build();
 
     }

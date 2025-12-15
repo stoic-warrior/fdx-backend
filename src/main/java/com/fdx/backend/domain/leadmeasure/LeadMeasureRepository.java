@@ -16,5 +16,5 @@ public interface LeadMeasureRepository extends JpaRepository<LeadMeasure, Long> 
     /**
      * 특정 WIG의 모든 Lead Measures 조회
      */
-    List<LeadMeasure> findByWigId(Long wigId) // jpa는 메서드 이름을 엔티티 필드로 파싱
+    List<LeadMeasure> findByWigId(Long wigId); // jpa는 메서드 이름을 엔티티 필드로 파싱
 }
