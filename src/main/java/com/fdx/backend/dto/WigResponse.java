@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * WIG 응답 DTO
@@ -27,6 +29,7 @@ public class WigResponse {
     private LocalDate byWhen;
     private MeasureType measureType;
     private String unit;
+    private List<LeadMeasureResponse> leadMeasures;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -42,8 +45,12 @@ public class WigResponse {
                 .byWhen(wig.getByWhen())
                 .measureType(wig.getMeasureType())
                 .unit(wig.getUnit())
+                .leadMeasures(
+                        wig.getLeadMeasures().stream()
+                                .map(LeadMeasureResponse::from)
+                                .collect(Collectors.toList())
+                )
                 .createdAt(wig.getCreatedAt())
-                .updatedAt(wig.getUpdatedAt())
                 .build();
     }
 }
