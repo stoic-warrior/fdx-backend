@@ -35,6 +35,7 @@ public class WigResponse {
 
     /**
      * Entity를 DTO로 변환하는 정적 팩토리 메서드
+     * Lead Measures 포함
      */
     public static WigResponse from(Wig wig) {
         return WigResponse.builder()
@@ -51,6 +52,7 @@ public class WigResponse {
                                 .collect(Collectors.toList())
                 )
                 .createdAt(wig.getCreatedAt())
+                .updatedAt(wig.getUpdatedAt())
                 .build();
     }
 }

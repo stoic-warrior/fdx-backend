@@ -9,10 +9,20 @@ VALUES ('백엔드 개발자 취업', '백수', '취업 성공', '2025-12-31', '
 INSERT INTO wigs (title, fromx, toy, by_when, measure_type, unit, created_at, updated_at)
 VALUES ('체중 감량', '75', '68', '2025-06-30', 'NUMERIC', 'kg', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
--- WIG 3: 영어 회화 실력 향상 (상태형)
-INSERT INTO wigs (title, fromx, toy, by_when, measure_type, unit, created_at, updated_at)
-VALUES ('영어 회화 실력 향상', '기초', '비즈니스 레벨', '2025-09-30', 'STATE', NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+-- ======================================
+-- Lead Measures (선행지표)
+-- ======================================
 
--- WIG 4: 월 수입 증대 (수치형)
-INSERT INTO wigs (title, fromx, toy, by_when, measure_type, unit, created_at, updated_at)
-VALUES ('월 수입 증대', '0', '300', '2025-08-31', 'NUMERIC', '만원', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+-- WIG 1 (백엔드 개발자 취업)의 Lead Measures
+INSERT INTO lead_measures (name, daily_target, weekly_target, unit, wig_id, created_at, updated_at)
+VALUES ('코딩 시간', 6, 42, '시간', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO lead_measures (name, daily_target, weekly_target, unit, wig_id, created_at, updated_at)
+VALUES ('이력서 제출', 0.5, 3, '개', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+-- WIG 2 (체중 감량)의 Lead Measures
+INSERT INTO lead_measures (name, daily_target, weekly_target, unit, wig_id, created_at, updated_at)
+VALUES ('운동 시간', 60, 420, '분', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO lead_measures (name, daily_target, weekly_target, unit, wig_id, created_at, updated_at)
+VALUES ('칼로리 섭취', 1800, 12600, 'kcal', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
