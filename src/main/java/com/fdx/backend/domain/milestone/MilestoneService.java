@@ -102,4 +102,60 @@ public class MilestoneService {
         return MilestoneResponse.from(savedMilestone);
     }
 
+    /**
+     * Milestone 수정
+     */
+    @Transactional
+    public MilestoneResponse updateMilestone(Long id, MilestoneRequest request) {
+        log.info("Milestone 수정: id={}", id);
+
+        Milestone milestone = milestoneRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException (
+                        "해당 Milestone을 찾을 수 없습니다: " +id));
+
+        // 엔티티 수정
+        milestone.setName(request.getName());
+        if (request.getCompleted() != null) {
+            milestone.setCompleted(request.getCompleted());
+        }
+        milestone.setOrderIndex(request.getOrderIndex());
+
+        log.info("Milestone 수정 완료: id={}", id);
+
+        return MilestoneResponse.from(milestone);
+    }
+
+    /**
+     * Milestone 완료 상태 토글
+     */
+    @Transactional
+    public MilestoneResponse toggleMilestoneCompleted(Long id) {
+        log.info("Milestone 완료 상태 토글: id={}", id);
+
+        Milestone milestone = milestoneRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "해당 Milestone을 찾을 수 없습니다: " + id));
+
+        milestone.toggleCompleted();
+
+        log.info("Milestone 완료 상태 변경: id={}, completed={}", id, milestone.getCompleted());
+
+        return MilestoneResponse.from(milestone);
+    }
+
+    /**
+     * Milestone 삭제
+     */
+    @Transactional
+    public void deleteMilestone(Long id) {
+        log.info("Milestone 삭제: id={}", id);
+
+        if(!milestoneRepository.existsById(id)) {
+            throw new IllegalArgumentException("해당 Milestone을 찾을 수 없습니다: " + id);
+        }
+
+        milestoneRepository.deleteById(id);
+        log.info("Milestone 삭제 완료: id={}", id);
+    }
+
 }
