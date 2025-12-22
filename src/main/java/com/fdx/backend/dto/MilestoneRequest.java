@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Data // 엔티티랑 다르게 DTO는 단방향이라 @Data써도 됨
 @NoArgsConstructor // json 역직렬화용. 리플렉션 활용
 @AllArgsConstructor // 테스트용
-@Builder
+@Builder // 테스트용
 public class MilestoneRequest {
 
     @NotBlank(message = "마일스톤 이름은 필수입니다") // notblank = string에서 null말고 ""같은 공백까지 불허용할때 사용
