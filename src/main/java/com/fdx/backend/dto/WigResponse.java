@@ -30,12 +30,13 @@ public class WigResponse {
     private MeasureType measureType;
     private String unit;
     private List<LeadMeasureResponse> leadMeasures;
+    private List<MilestoneResponse> milestones;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     /**
      * Entity를 DTO로 변환하는 정적 팩토리 메서드
-     * Lead Measures 포함
+     * Lead Measures와 Milestones 포함
      */
     public static WigResponse from(Wig wig) {
         return WigResponse.builder()
@@ -49,6 +50,11 @@ public class WigResponse {
                 .leadMeasures(
                         wig.getLeadMeasures().stream()
                                 .map(LeadMeasureResponse::from)
+                                .collect(Collectors.toList())
+                )
+                .milestones(
+                        wig.getMilestones().stream()
+                                .map(MilestoneResponse::from)
                                 .collect(Collectors.toList())
                 )
                 .createdAt(wig.getCreatedAt())
