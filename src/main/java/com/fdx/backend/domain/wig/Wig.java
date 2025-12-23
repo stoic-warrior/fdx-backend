@@ -2,6 +2,7 @@ package com.fdx.backend.domain.wig;
 
 import com.fdx.backend.domain.MeasureType;
 import com.fdx.backend.domain.leadmeasure.LeadMeasure;
+import com.fdx.backend.domain.milestone.Milestone;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -54,8 +55,18 @@ public class Wig {
      * orphanRemoval: 컬렉션에서 제거된 Lead Measure 자동 삭제
      */
     @OneToMany(mappedBy = "wig", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
+    @Builder.Default // “빌더에서 값을 안 주면, 필드에 선언된 기본값을 써라”
     private List<LeadMeasure> leadMeasures = new ArrayList<>();
+
+    /**
+     * Milestones (마일스톤) - 양방향 관계
+     * STATE 타입 WIG에만 사용됩니다
+     */
+    @OneToMany(mappedBy = "wig", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("orderIndex ASC") // orderIndex 컬럼 기준으로 오름차순 정렬
+    @Builder.Default
+    private List<Milestone> milestones = new ArrayList<>();
+
 
     @CreationTimestamp // INSERT시 자동으로 현재 시간 기록
     @Column(nullable = false, updatable = false)
@@ -64,6 +75,7 @@ public class Wig {
     @UpdateTimestamp // UPDATE시 자동으로 현재 시간 갱신
     @Column(nullable = false)
     private LocalDateTime updatedAt;
+
 
     /**
      * 편의 메서드: Lead Measure 추가
@@ -83,6 +95,24 @@ public class Wig {
         leadMeasure.setWig(null); // FK를 들고 있는쪽에서 파괴할때 orphanRemoval = true 발동
     }
 
+
+    /**
+     * 편의 메서드: Milestone 추가
+     */
+    public void addMilestone(Milestone milestone) {
+        milestones.add(milestone); // 객체 그래프 연결
+        milestone.setWig(this); // 연관관계의 주인 ㅡ> DB반영
+    }
+
+    /**
+     * 편의 메서드: Milestone 제거
+     */
+    public void removeMilestone(Milestone milestone) {
+        milestones.remove(milestone);
+        milestone.setWig(null);
+    }
+
+
     /**
      * NUMERIC 타입 WIG 생성용 팩토리 메서드
      */
@@ -97,6 +127,7 @@ public class Wig {
                 .measureType(MeasureType.NUMERIC)
                 .unit(unit)
                 .leadMeasures(new ArrayList<>())
+                .milestones(new ArrayList<>())
                 .build();
     }
 
@@ -112,6 +143,7 @@ public class Wig {
                 .byWhen(byWhen)
                 .measureType(MeasureType.STATE)
                 .leadMeasures(new ArrayList<>())
+                .milestones(new ArrayList<>())
                 .build();
 
     }
