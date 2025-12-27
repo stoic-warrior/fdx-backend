@@ -1,6 +1,7 @@
 package com.fdx.backend.domain.wig;
 
 import com.fdx.backend.domain.MeasureType;
+import com.fdx.backend.domain.commitment.Commitment;
 import com.fdx.backend.domain.leadmeasure.LeadMeasure;
 import com.fdx.backend.domain.milestone.Milestone;
 import jakarta.persistence.*;
@@ -67,6 +68,14 @@ public class Wig {
     @Builder.Default
     private List<Milestone> milestones = new ArrayList<>();
 
+    /**
+     * Commitments (주간 약속) - 양방향 관계
+     * 모든 타입의 WIG에서 사용됩니다
+     */
+    @OneToMany(mappedBy = "wig", cascade = CascadeType.ALL, orphanRemoval = true) // Commitment의 wig필드가 FK. FK를 가진쪽이 연관관계의 주인, wig의 모든 작업을 자식에게 전파, 부모와 관계끊어지면 삭제
+    @Builder.Default
+    private List<Commitment> commitments = new ArrayList<>();
+
 
     @CreationTimestamp // INSERT시 자동으로 현재 시간 기록
     @Column(nullable = false, updatable = false)
@@ -112,6 +121,21 @@ public class Wig {
         milestone.setWig(null);
     }
 
+    /**
+     * 편의 메서드: Commitment 추가
+     */
+    public void addCommitment(Commitment commitment) {
+        commitments.add(commitment);
+        commitment.setWig(this);
+    }
+
+    /**
+     * 편의 메서드: Commitment 제거
+     */
+    public void removeCommitment(Commitment commitment) {
+        commitments.remove(commitment);
+        commitment.setWig(null);
+    }
 
     /**
      * NUMERIC 타입 WIG 생성용 팩토리 메서드
@@ -128,6 +152,7 @@ public class Wig {
                 .unit(unit)
                 .leadMeasures(new ArrayList<>())
                 .milestones(new ArrayList<>())
+                .commitments(new ArrayList<>())
                 .build();
     }
 
@@ -144,6 +169,7 @@ public class Wig {
                 .measureType(MeasureType.STATE)
                 .leadMeasures(new ArrayList<>())
                 .milestones(new ArrayList<>())
+                .commitments(new ArrayList<>())
                 .build();
 
     }
