@@ -32,6 +32,7 @@ public class WigService {
      */
     public List<WigResponse> getAllWigs() {
         log.info("모든 WIG 조회");
+
         return wigRepository.findAll().stream()
                 .map(WigResponse::from)
                 .collect(Collectors.toList());
