@@ -29,7 +29,7 @@ public interface CommitmentRepository extends JpaRepository<Commitment, Long> {
     /**
      * 특정 WIG의 특정 주차 완료된 Commitments 개수
      */
-    long countByWigIdAndWeekAndCompletedTrue(Long wigId, String week);
+    long countByWigIdAndWeekAndCompletedTrue(Long wigId, String week); // jpa표준이 count는 long이라 일관성을 위해 long씀
 
     /**
      * 특정 WIG의 특정 주차 전체 Commitments 개수
