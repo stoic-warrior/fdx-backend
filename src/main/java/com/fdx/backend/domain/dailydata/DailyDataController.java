@@ -29,7 +29,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-public class DailyDataContoroller {
+public class DailyDataController {
 
     private final DailyDataService dailyDataService;
 
