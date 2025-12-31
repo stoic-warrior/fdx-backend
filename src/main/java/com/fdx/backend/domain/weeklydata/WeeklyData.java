@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
  * NUMERIC 타입: actual, target 사용
  */
 @Entity
-@Table(name = "weekly_data", uniqueConstraints = @UniqueConstraint(columnNames = {"wig_id", "week"}))
+@Table(name = "weekly_data", uniqueConstraints = @UniqueConstraint(columnNames = {"wig_id", "week"})) // 서비스에서 중복을 막지만, DB에서도 최후의 방어선
 @Getter
 @Setter
 @NoArgsConstructor
