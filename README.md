@@ -1,211 +1,461 @@
-# 4DX Backend - WIG Tracker API
+# 🎯 4DX WIG Tracker - Backend
 
-4 Disciplines of Execution 기반 목표 관리 시스템 백엔드
+> **4 Disciplines of Execution** 방법론을 기반으로 한 목표 관리 시스템
 
-## 📋 프로젝트 구조
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://www.oracle.com/java/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-```
-src/main/java/com/fdx/backend/
-├── domain/
-│   ├── MeasureType.java          # 측정 유형 ENUM
-│   └── wig/
-│       ├── Wig.java              # WIG 엔티티
-│       ├── WigRepository.java    # 데이터 액세스 계층
-│       ├── WigService.java       # 비즈니스 로직
-│       └── WigController.java    # REST API 컨트롤러
-└── dto/
-    ├── WigRequest.java           # API 요청 DTO
-    └── WigResponse.java          # API 응답 DTO
+## 📋 목차
 
-src/main/resources/
-├── application.yml               # 애플리케이션 설정
-└── data.sql                      # 초기 테스트 데이터
-```
+- [프로젝트 소개](#-프로젝트-소개)
+- [주요 기능](#-주요-기능)
+- [기술 스택](#️-기술-스택)
+- [시작하기](#-시작하기)
+- [API 문서](#-api-문서)
+- [프로젝트 구조](#-프로젝트-구조)
+- [ERD](#-erd)
+- [개발 가이드](#-개발-가이드)
 
-## 🚀 실행 방법
+---
 
-### 1. IntelliJ IDEA에서 실행
-1. 프로젝트를 IntelliJ로 엽니다
-2. Gradle 의존성이 자동으로 다운로드될 때까지 기다립니다
-3. `src/main/java/com/fdx/backend/FdxBackendApplication.java` 파일을 찾습니다
-4. 파일을 열고 `main` 메서드 옆의 ▶️ 버튼을 클릭합니다
+## 🎯 프로젝트 소개
 
-### 2. 터미널에서 실행
+**4DX WIG Tracker**는 조직과 개인의 중요한 목표(WIG: Wildly Important Goals)를 효과적으로 관리하기 위한 백엔드 시스템입니다.
+
+### 4DX란?
+
+4 Disciplines of Execution은 다음 4가지 원칙을 따릅니다:
+
+1. **집중의 원칙** - 가장 중요한 목표에 집중 (최대 2개의 WIG)
+2. **선행지표의 원칙** - 결과를 이끄는 활동에 집중
+3. **참여 스코어보드의 원칙** - 진행 상황을 명확히 시각화
+4. **책임의 리듬 만들기** - 주간 약속과 실행
+
+### 핵심 특징
+
+- ✅ **최소주의 설계** - 필요한 기능만 구현
+- ✅ **타입 안정성** - NUMERIC(수치형) / STATE(상태형) 목표 지원
+- ✅ **실시간 진행률** - 자동 계산 및 추적
+- ✅ **유연한 데이터 관리** - 일간/주간 실적 관리
+
+---
+
+## 🌟 주요 기능
+
+### 1. WIG 관리
+- 최대 2개의 WIG 생성 및 관리 (4DX 원칙)
+- NUMERIC(수치형) / STATE(상태형) 타입 지원
+- 진행률 자동 계산
+
+### 2. Lead Measures (선행지표)
+- WIG 달성을 위한 핵심 활동 지표
+- 일일/주간 목표 설정
+- 실적 추적 및 비교
+
+### 3. Milestones (마일스톤)
+- STATE 타입 WIG 전용
+- 단계별 진행 상황 관리
+- 완료율 자동 계산
+
+### 4. Commitments (주간 약속)
+- 주차별 약속 관리
+- 완료 상태 토글
+- 이행률 추적
+
+### 5. 데이터 추적
+- **주간 데이터**: Lag Measure 및 Lead Measure 주간 실적
+- **일간 데이터**: Lead Measure 일별 상세 기록
+
+---
+
+## 🛠️ 기술 스택
+
+### Backend
+- **Java 21** - 최신 LTS 버전
+- **Spring Boot 3.x** - 프레임워크
+- **Spring Data JPA** - 데이터 액세스
+- **Hibernate** - ORM
+- **H2 Database** - 개발용 인메모리 DB
+
+### Libraries
+- **Lombok** - 보일러플레이트 코드 제거
+- **Validation** - 입력 검증
+- **Slf4j** - 로깅
+
+---
+
+## 🚀 시작하기
+
+### 요구사항
+
+- Java 21 이상
+- Gradle 7.x 이상
+
+### 설치 및 실행
+
 ```bash
-# Windows
-gradlew.bat bootRun
+# 1. 저장소 클론
+git clone https://github.com/your-username/fdx-backend.git
+cd fdx-backend
 
-# Mac/Linux
+# 2. 빌드
+./gradlew build
+
+# 3. 실행
 ./gradlew bootRun
 ```
 
-### 3. 실행 확인
-- 콘솔에 "Started FdxBackendApplication" 메시지가 보이면 성공!
-- 브라우저에서 http://localhost:8080 접속
+### 애플리케이션 접속
 
-## 🗄️ H2 데이터베이스 콘솔
+- **API 서버**: http://localhost:8080
+- **H2 콘솔**: http://localhost:8080/h2-console
+    - JDBC URL: `jdbc:h2:mem:fdxdb`
+    - Username: `sa`
+    - Password: (공백)
 
-개발 중 데이터베이스를 직접 확인할 수 있습니다:
+---
+
+## 📚 API 문서
+
+### WIG API
+
+#### 전체 WIG 조회
+```http
+GET /api/wigs
+```
+
+**응답 예시:**
+```json
+[
+  {
+    "id": 1,
+    "title": "백엔드 개발자 취업",
+    "fromX": "백수",
+    "toY": "취업 성공",
+    "byWhen": "2025-12-31",
+    "measureType": "STATE",
+    "leadMeasures": [...],
+    "milestones": [...]
+  }
+]
+```
+
+#### WIG 생성
+```http
+POST /api/wigs
+Content-Type: application/json
+
+{
+  "title": "체중 감량",
+  "fromX": "75",
+  "toY": "68",
+  "byWhen": "2025-06-30",
+  "measureType": "NUMERIC",
+  "unit": "kg"
+}
+```
+
+#### WIG 개수 조회
+```http
+GET /api/wigs/count
+```
+
+**응답 예시:**
+```json
+{
+  "count": 2,
+  "maxCount": 2,
+  "canAddMore": false
+}
+```
+
+### Lead Measures API
+
+#### Lead Measures 조회
+```http
+GET /api/wigs/{wigId}/lead-measures
+```
+
+#### Lead Measure 생성
+```http
+POST /api/lead-measures
+Content-Type: application/json
+
+{
+  "name": "코딩 시간",
+  "dailyTarget": 6.0,
+  "weeklyTarget": 42.0,
+  "unit": "시간",
+  "wigId": 1
+}
+```
+
+### Milestones API
+
+#### Milestones 조회
+```http
+GET /api/wigs/{wigId}/milestones
+```
+
+#### 진행률 조회
+```http
+GET /api/wigs/{wigId}/milestones/progress
+```
+
+**응답 예시:**
+```json
+{
+  "total": 5,
+  "completed": 2,
+  "progressRate": 40.0
+}
+```
+
+#### 완료 상태 토글
+```http
+PATCH /api/milestones/{id}/toggle
+```
+
+### Commitments API
+
+#### 주차별 약속 조회
+```http
+GET /api/wigs/{wigId}/commitments/week/{week}
+```
+
+#### 이행률 조회
+```http
+GET /api/wigs/{wigId}/commitments/week/{week}/rate
+```
+
+**응답 예시:**
+```json
+{
+  "wigId": 1,
+  "week": "W5",
+  "total": 4,
+  "completed": 2,
+  "completionRate": 50.0
+}
+```
+
+### Weekly Data API
+
+#### 주간 데이터 생성
+```http
+POST /api/weekly-data
+Content-Type: application/json
+
+{
+  "week": "W1",
+  "milestoneProgress": 20.0,  // STATE 타입용
+  "actual": 75.0,              // NUMERIC 타입용
+  "target": 74.0,              // NUMERIC 타입용
+  "lead1": 35.0,
+  "lead2": 2.0,
+  "wigId": 1
+}
+```
+
+### Daily Data API
+
+#### 날짜 범위 조회
+```http
+GET /api/wigs/{wigId}/daily-data/range?startDate=2025-01-01&endDate=2025-01-07
+```
+
+#### 일간 데이터 생성
+```http
+POST /api/daily-data
+Content-Type: application/json
+
+{
+  "date": "2025-01-06",
+  "week": "W1",
+  "dayOfWeek": "월",
+  "lead1": 7.0,
+  "lead2": 1.0,
+  "wigId": 1
+}
+```
+
+---
+
+## 📁 프로젝트 구조
+
+```
+fdx-backend/
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com/fdx/backend/
+│   │   │       ├── domain/
+│   │   │       │   ├── wig/
+│   │   │       │   │   ├── Wig.java
+│   │   │       │   │   ├── WigRepository.java
+│   │   │       │   │   ├── WigService.java
+│   │   │       │   │   └── WigController.java
+│   │   │       │   ├── leadmeasure/
+│   │   │       │   ├── milestone/
+│   │   │       │   ├── commitment/
+│   │   │       │   ├── weeklydata/
+│   │   │       │   └── dailydata/
+│   │   │       ├── dto/
+│   │   │       │   ├── *Request.java
+│   │   │       │   └── *Response.java
+│   │   │       └── MeasureType.java
+│   │   └── resources/
+│   │       ├── application.yaml
+│   │       └── data.sql
+│   └── test/
+├── build.gradle
+└── README.md
+```
+
+---
+
+## 🗄️ ERD
+
+```
+┌─────────────┐
+│     Wig     │
+├─────────────┤
+│ id          │
+│ title       │
+│ fromX       │
+│ toY         │
+│ byWhen      │
+│ measureType │
+│ unit        │
+└──────┬──────┘
+       │
+       ├──────────────┐
+       │              │
+       ▼              ▼
+┌─────────────┐  ┌─────────────┐
+│LeadMeasure  │  │  Milestone  │
+├─────────────┤  ├─────────────┤
+│ name        │  │ name        │
+│ dailyTarget │  │ completed   │
+│weeklyTarget │  │ orderIndex  │
+│ unit        │  └─────────────┘
+│ wig_id      │
+└─────────────┘       
+       │
+       ├──────────────┬──────────────┐
+       ▼              ▼              ▼
+┌─────────────┐  ┌──────────┐  ┌──────────┐
+│ Commitment  │  │WeeklyData│  │DailyData │
+├─────────────┤  ├──────────┤  ├──────────┤
+│ text        │  │ week     │  │ date     │
+│ week        │  │ actual   │  │ week     │
+│ completed   │  │ target   │  │ lead1    │
+│ wig_id      │  │ lead1    │  │ lead2    │
+└─────────────┘  │ lead2    │  │ wig_id   │
+                 │ wig_id   │  └──────────┘
+                 └──────────┘
+```
+
+### 관계 설명
+
+- **Wig ↔ LeadMeasure**: 1:N (한 WIG에 여러 선행지표)
+- **Wig ↔ Milestone**: 1:N (STATE 타입 WIG만)
+- **Wig ↔ Commitment**: 1:N (주간 약속)
+- **Wig ↔ WeeklyData**: 1:N (주간 실적)
+- **Wig ↔ DailyData**: 1:N (일간 실적)
+
+---
+
+## 💻 개발 가이드
+
+### 코드 스타일
+
+#### 1. 네이밍 컨벤션
+```java
+// Entity
+public class Wig { }
+
+// Repository
+public interface WigRepository extends JpaRepository<Wig, Long> { }
+
+// Service
+public class WigService { }
+
+// Controller
+public class WigController { }
+
+// DTO
+public class WigRequest { }
+public class WigResponse { }
+```
+
+#### 2. 패키지 구조
+```
+도메인별로 패키지 구성 (Domain-Driven Design)
+domain/{entity}/
+  ├── {Entity}.java
+  ├── {Entity}Repository.java
+  ├── {Entity}Service.java
+  └── {Entity}Controller.java
+```
+
+#### 3. 트랜잭션 관리
+```java
+@Service
+@Transactional(readOnly = true)  // 기본은 읽기 전용
+public class WigService {
+    
+    @Transactional  // 쓰기 작업만 트랜잭션 활성화
+    public WigResponse createWig(WigRequest request) {
+        // ...
+    }
+}
+```
+
+### 빌드 및 테스트
+
+```bash
+# 빌드
+./gradlew build
+
+# 테스트 실행
+./gradlew test
+
+# 클린 빌드
+./gradlew clean build
+
+# 실행
+./gradlew bootRun
+```
+
+### H2 콘솔 사용법
 
 1. 브라우저에서 http://localhost:8080/h2-console 접속
-2. 다음 정보로 로그인:
-   - JDBC URL: `jdbc:h2:mem:fdxdb`
-   - User Name: `sa`
-   - Password: (비워두기)
+2. JDBC URL 입력: `jdbc:h2:mem:fdxdb`
+3. Connect 클릭
+4. SQL 쿼리 실행 예시:
+```sql
+-- 모든 WIG 조회
+SELECT * FROM wigs;
 
-## 📡 API 엔드포인트
+-- 특정 WIG의 Lead Measures 조회
+SELECT * FROM lead_measures WHERE wig_id = 1;
 
-### 1. 모든 WIG 조회
-```bash
-GET http://localhost:8080/api/wigs
+-- 완료된 Milestones 조회
+SELECT * FROM milestones WHERE completed = true;
 ```
 
-### 2. 특정 WIG 조회
-```bash
-GET http://localhost:8080/api/wigs/1
-```
+### 테스트 데이터
 
-### 3. 유형별 WIG 조회
-```bash
-# 수치형 목표 조회
-GET http://localhost:8080/api/wigs/type/NUMERIC
+애플리케이션 시작 시 `data.sql`이 자동 실행되어 다음 데이터가 생성됩니다:
 
-# 상태형 목표 조회
-GET http://localhost:8080/api/wigs/type/STATE
-```
+- **WIG 2개** (백엔드 개발자 취업, 체중 감량)
+- **Lead Measures 4개**
+- **Milestones 5개**
+- **Commitments 4개**
+- **Weekly Data 8개**
+- **Daily Data 10개**
 
-### 4. WIG 검색
-```bash
-GET http://localhost:8080/api/wigs/search?keyword=취업
-```
+---
 
-### 5. WIG 생성
-```bash
-POST http://localhost:8080/api/wigs
-Content-Type: application/json
-
-{
-  "title": "운동 습관 만들기",
-  "fromX": "운동 안함",
-  "toY": "주 5회 운동",
-  "byWhen": "2025-06-30",
-  "measureType": "STATE"
-}
-```
-
-### 6. WIG 수정
-```bash
-PUT http://localhost:8080/api/wigs/1
-Content-Type: application/json
-
-{
-  "title": "백엔드 개발자 취업 (수정)",
-  "fromX": "백수",
-  "toY": "대기업 합격",
-  "byWhen": "2025-12-31",
-  "measureType": "STATE"
-}
-```
-
-### 7. WIG 삭제
-```bash
-DELETE http://localhost:8080/api/wigs/1
-```
-
-## 🧪 API 테스트 방법
-
-### 방법 1: 브라우저 (GET 요청만 가능)
-```
-http://localhost:8080/api/wigs
-```
-
-### 방법 2: Postman 사용
-1. Postman 다운로드: https://www.postman.com/downloads/
-2. 위의 API 엔드포인트를 Postman에 입력하여 테스트
-
-### 방법 3: IntelliJ HTTP Client
-1. IntelliJ에서 `test-api.http` 파일 생성
-2. 다음 내용 작성:
-
-```http
-### 모든 WIG 조회
-GET http://localhost:8080/api/wigs
-
-### WIG 생성
-POST http://localhost:8080/api/wigs
-Content-Type: application/json
-
-{
-  "title": "독서 습관 만들기",
-  "fromX": "0",
-  "toY": "12",
-  "byWhen": "2025-12-31",
-  "measureType": "NUMERIC",
-  "unit": "권"
-}
-
-### WIG 조회
-GET http://localhost:8080/api/wigs/1
-
-### WIG 수정
-PUT http://localhost:8080/api/wigs/1
-Content-Type: application/json
-
-{
-  "title": "독서 습관 만들기 (수정)",
-  "fromX": "0",
-  "toY": "24",
-  "byWhen": "2025-12-31",
-  "measureType": "NUMERIC",
-  "unit": "권"
-}
-
-### WIG 삭제
-DELETE http://localhost:8080/api/wigs/1
-```
-
-3. 각 요청 옆의 ▶️ 버튼 클릭하여 실행
-
-### 방법 4: curl (터미널)
-```bash
-# 조회
-curl http://localhost:8080/api/wigs
-
-# 생성
-curl -X POST http://localhost:8080/api/wigs \
-  -H "Content-Type: application/json" \
-  -d '{"title":"새 목표","fromX":"0","toY":"100","byWhen":"2025-12-31","measureType":"NUMERIC","unit":"개"}'
-```
-
-## 📚 다음 단계
-
-현재는 WIG의 기본 CRUD만 구현되어 있습니다. 다음 단계로 구현할 기능:
-
-1. **Lead Measures (선행지표)** - WIG와 1:N 관계
-2. **Weekly/Daily Data (주간/일일 데이터)** - 진행도 추적
-3. **Milestones (마일스톤)** - 상태형 WIG의 체크리스트
-4. **Commitments (주간 약속)** - 주간 실행 계획
-5. **통계 API** - 진행률, 달성도 계산
-6. **Spring Security** - 인증/인가
-7. **MySQL 연동** - 프로덕션 DB
-
-## 🐛 트러블슈팅
-
-### 포트 8080이 이미 사용 중
-- `application.yml`에서 `server.port: 8081`로 변경
-
-### Gradle 빌드 실패
-```bash
-# Gradle Wrapper 권한 부여 (Mac/Linux)
-chmod +x gradlew
-
-# 의존성 다시 다운로드
-./gradlew clean build --refresh-dependencies
-```
-
-### H2 콘솔 접속 안됨
-- `application.yml`에서 `spring.h2.console.enabled: true` 확인
-
-## 📞 문의
-
-궁금한 점이 있으면 Issues에 등록해주세요!
