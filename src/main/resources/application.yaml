@@ -24,6 +24,7 @@ spring:
       hibernate:
         format_sql: true  # SQL 포맷팅, 들여쓰기 잘해서 쿼리 콘솔에 출력
         dialect: org.hibernate.dialect.H2Dialect # 어떤 DB용 SQL 문법을 쓸 건지 설정
+    defer-datasource-initialization: true
 
   # 한글 깨짐 방지
   messages:
