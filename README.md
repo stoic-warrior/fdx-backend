@@ -2,9 +2,8 @@
 
 > **4 Disciplines of Execution** 방법론을 기반으로 한 목표 관리 시스템
 
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.0-brightgreen.svg)](https://spring.io/projects/spring-boot)
 [![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://www.oracle.com/java/)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ## 📋 목차
 
@@ -73,7 +72,7 @@
 
 ### Backend
 - **Java 21** - 최신 LTS 버전
-- **Spring Boot 3.x** - 프레임워크
+- **Spring Boot 4.0.0** - 최신 프레임워크
 - **Spring Data JPA** - 데이터 액세스
 - **Hibernate** - ORM
 - **H2 Database** - 개발용 인메모리 DB
@@ -87,16 +86,11 @@
 
 ## 🚀 시작하기
 
-### 요구사항
-
-- Java 21 이상
-- Gradle 7.x 이상
-
 ### 설치 및 실행
 
 ```bash
 # 1. 저장소 클론
-git clone https://github.com/your-username/fdx-backend.git
+git clone https://github.com/stoic-warrior/fdx-backend
 cd fdx-backend
 
 # 2. 빌드
@@ -105,6 +99,8 @@ cd fdx-backend
 # 3. 실행
 ./gradlew bootRun
 ```
+
+> **참고**: Spring Boot 4.0.0, Java 21 사용
 
 ### 애플리케이션 접속
 
