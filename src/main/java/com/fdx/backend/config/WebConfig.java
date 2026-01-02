@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer { // Spring MVC 설정을 커스터마이징 할 수 있는 인터페이스
 
     @Override
-    public void addCorsMappings(CorsRegistry registry) { // 브라우저는 서버와 다른 origin이 응답을 보지 못하게 한다.(SOP) 백엔드(8080)와 다른 출신(origin)들이 서버 응답을 볼 수 있게 하는 허가증 = CORS에 등록.
+    public void addCorsMappings(CorsRegistry registry) { // 브라우저는 서버와 다른 origin이 응답을 보지 못하게 한다.(SOP) 백엔드(8080)와 다른 출신(origin)들이 서버 응답을 볼 수 있게 하는 허가증 = CORS에 등록. http 응답 헤더에 붙음
         // CORS = 브라우저의 다른 악성사이트에서, 이 서버의 응답을 열람하지 못하게 하는 역할
 
         registry.addMapping("/api/**")
