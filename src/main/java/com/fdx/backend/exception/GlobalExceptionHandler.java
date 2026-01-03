@@ -4,9 +4,13 @@ import com.fdx.backend.dto.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 전역 예외 처리 핸들러
@@ -27,7 +31,7 @@ public class GlobalExceptionHandler {
         log.error("IllegalArgumentException: {}", e.getMessage());
 
         ErrorResponse error = ErrorResponse.of(
-                "INVALID_ARGMENT",
+                "INVALID_ARGUMENT",
                 e.getMessage(),
                 HttpStatus.BAD_REQUEST.value()
         );
@@ -61,7 +65,50 @@ public class GlobalExceptionHandler {
      * @Valid 검증 실패 시
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse>
+    public ResponseEntity<ErrorResponse> handleValidationException(
+            MethodArgumentNotValidException e) {
+        log.error("Validation error: {}", e.getMessage());
+
+        Map<String, String> fieldErrors = new HashMap<>();
+        e.getBindingResult().getAllErrors().forEach(error -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            fieldErrors.put(fieldName, errorMessage);
+        });
+
+        ErrorResponse error = ErrorResponse.of(
+                "VALIDATION_FAILED",
+                "입력값 검증에 실패했습니다",
+                HttpStatus.BAD_REQUEST.value(),
+                fieldErrors
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(error);
+
+    }
+
+
+    /**
+     * 예상하지 못한 모든 예외 처리
+     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGeneralException(Exception e) {
+        log.error("Unexpected error occurred", e);
+
+        ErrorResponse error = ErrorResponse.of(
+                "INTERNAL_SERVER_ERROR",
+                "서버 내부 오류가 발생했습니다",
+                HttpStatus.INTERNAL_SERVER_ERROR.value()
+        );
+        error.setDetails(e.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(error);
+
+    }
 
 
 }
