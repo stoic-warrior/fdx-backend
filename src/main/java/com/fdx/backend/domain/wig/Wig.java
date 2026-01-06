@@ -2,8 +2,10 @@ package com.fdx.backend.domain.wig;
 
 import com.fdx.backend.domain.MeasureType;
 import com.fdx.backend.domain.commitment.Commitment;
+import com.fdx.backend.domain.dailydata.DailyData;
 import com.fdx.backend.domain.leadmeasure.LeadMeasure;
 import com.fdx.backend.domain.milestone.Milestone;
+import com.fdx.backend.domain.weeklydata.WeeklyData;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -76,6 +78,20 @@ public class Wig {
     @Builder.Default
     private List<Commitment> commitments = new ArrayList<>();
 
+    /**
+     * Weekly Data (주간 실적) - 양방향 관계
+     */
+    @OneToMany(mappedBy = "wig", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<WeeklyData> weeklyDataList = new ArrayList<>();
+
+    /**
+     * Daily Data (일간 실적) - 양방향 관계
+     */
+    @OneToMany(mappedBy = "wig", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<DailyData> dailyDataList = new ArrayList<>();
+
 
     @CreationTimestamp // INSERT시 자동으로 현재 시간 기록
     @Column(nullable = false, updatable = false)
@@ -138,6 +154,38 @@ public class Wig {
     }
 
     /**
+     * 편의 메서드: Weekly Data 추가
+     */
+    public void addWeeklyData(WeeklyData weeklyData) {
+        weeklyDataList.add(weeklyData);
+        weeklyData.setWig(this);
+    }
+
+    /**
+     * 편의 메서드: Weekly Data 제거
+     */
+    public void removeWeeklyData(WeeklyData weeklyData) {
+        weeklyDataList.remove(weeklyData);
+        weeklyData.setWig(null);
+    }
+
+    /**
+     * 편의 메서드: Daily Data 추가
+     */
+    public void addDailyData(DailyData dailyData) {
+        dailyDataList.add(dailyData);
+        dailyData.setWig(this);
+    }
+
+    /**
+     * 편의 메서드: Daily Data 제거
+     */
+    public void removeDailyData(DailyData dailyData) {
+        dailyDataList.remove(dailyData);
+        dailyData.setWig(null);
+    }
+
+    /**
      * NUMERIC 타입 WIG 생성용 팩토리 메서드
      */
     public static Wig createNumericWig(String title, String fromX, String toY,
@@ -153,6 +201,8 @@ public class Wig {
                 .leadMeasures(new ArrayList<>())
                 .milestones(new ArrayList<>())
                 .commitments(new ArrayList<>())
+                .weeklyDataList(new ArrayList<>())
+                .dailyDataList(new ArrayList<>())
                 .build();
     }
 
@@ -170,6 +220,8 @@ public class Wig {
                 .leadMeasures(new ArrayList<>())
                 .milestones(new ArrayList<>())
                 .commitments(new ArrayList<>())
+                .weeklyDataList(new ArrayList<>())
+                .dailyDataList(new ArrayList<>())
                 .build();
 
     }
