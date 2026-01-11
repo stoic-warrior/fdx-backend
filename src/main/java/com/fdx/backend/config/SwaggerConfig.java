@@ -18,9 +18,9 @@ import java.util.List;
 public class SwaggerConfig {
 
     @Bean
-    public OpenAPI customOpenAPI() {
+    public OpenAPI customOpenAPI() { // 빈등록
         return new OpenAPI()
-                .info(new Info()
+                .info(new Info() // 문서 상단에 보이는 기본정보
                         .title("4DX WIG Tracker API")
                         .version("1.0.0")
                         .description("""
@@ -45,7 +45,7 @@ public class SwaggerConfig {
                         .license(new License()
                                 .name("Apache 2.0")
                                 .url("https://www.apache.org/licenses/LICENSE-2.0.html")))
-                .servers(List.of(
+                .servers(List.of( // 이 API가 실제로 떠있는 주소 목록
                         new Server()
                                 .url("http://localhost:8080")
                                 .description("개발 서버"),
