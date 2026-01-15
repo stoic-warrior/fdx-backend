@@ -42,3 +42,15 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE # SQL에 바인딩되는 실제 파라미터 값을 보고 싶을 때
 
 
+# Swagger/OpenAPI 설정
+springdoc:
+  api-docs:
+    path: /api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    operationsSorter: method  # HTTP 메서드별 정렬
+    tagsSorter: alpha         # 태그 알파벳 정렬
+    display-request-duration: true
+    doc-expansion: none       # 기본적으로 접힌 상태
