@@ -57,7 +57,7 @@ public class User {
      * 사용자의 WIG 목록 (1:N)
      * 한 사용자는 최대 2개의 WIG를 가질 수 있음
      */
-    @OneToMany(mappedBy = 'user', cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Wig> wigs = new ArrayList<>();
 
