@@ -9,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 인증 REST API Controller
@@ -60,6 +57,22 @@ public class AuthController {
     public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequest request) {
         log.info("POST /api/auth/login - 로그인 요청: {}", request.getEmail());
         TokenResponse response = authService.login(request);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 현재 로그인한 사용자 정보 조회
+     * GET /api/auth/me
+     */
+    @Operation(summary = "내 정보 조회", description = "현재 로그인한 사용자의 정보를 조회합니다")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "401", description = "인증 필요")
+    })
+    @GetMapping("/me")
+    public ResponseEntity<UserResponse> getCurrentUser() {
+        log.info("GET /api/auth/me - 현재 사용자 정보 조회");
+        UserResponse response = authService.getCurrentUserInfo();
         return ResponseEntity.ok(response);
     }
 }
