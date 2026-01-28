@@ -22,6 +22,7 @@ import java.io.IOException;
 @Slf4j
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
+    // 빈이 아니므로 @RequiredArgsConstructor안씀
     private final ObjectMapper objectMapper = new ObjectMapper(); // Java 객체 → JSON 문자열 변환기
 
 
