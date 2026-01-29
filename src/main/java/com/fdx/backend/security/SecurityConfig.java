@@ -53,19 +53,18 @@ public class SecurityConfig {
                                 "/api-docs/**",           // API 문서
                                 "/v3/api-docs/**"
                         ).permitAll() // 로그인 없이도 접근 허용
-                        // 그 외 모든 요청은 인증 필요
                         .anyRequest().authenticated() // 위에 나열한 것 말고는 전부 인증 필요
                 ) // 여기서 “인증”은 보통 SecurityContext에 Authentication이 채워진 상태를 의미하고, 그걸 만드는 게 바로 JWT 필터 역할.
 
-        // 인증 실패 처리 (401 커스텀)
+                // 인증 실패 처리 (401 커스텀)
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint))
 
-        // H2 콘솔용 설정 (iframe 허용). H2 콘솔은 브라우저에서 iframe을 쓰는 경우가 있어 X-Frame-Options 때문에 막힐 수 있음. sameOrigin()으로 같은 오리진에서의 iframe 렌더는 허용.
+                // H2 콘솔용 설정 (iframe 허용). H2 콘솔은 브라우저에서 iframe을 쓰는 경우가 있어 X-Frame-Options 때문에 막힐 수 있음. sameOrigin()으로 같은 오리진에서의 iframe 렌더는 허용.
                 .headers(headers -> headers
                         .frameOptions(frame -> frame.sameOrigin()))
 
-        // JWT 필터 추가. '“jwtAuthenticationFilter를 UsernamePasswordAuthenticationFilter보다 앞에 배치하라”
+                // JWT 필터 추가. '“jwtAuthenticationFilter를 UsernamePasswordAuthenticationFilter보다 앞에 배치하라”
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
