@@ -5,7 +5,6 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,7 +22,6 @@ import java.util.Date;
  */
 @Component // 스프링 빈으로 등록
 @Slf4j // 로거
-@RequiredArgsConstructor // final필드 주입
 public class JwtTokenProvider {
 
     @Value("${jwt.secret}") // application.yml에서 주입
@@ -39,6 +37,9 @@ public class JwtTokenProvider {
     // 그래서 토큰 → 이메일 → DB 조회 → UserDetails 생성 흐름이 필요
     private final UserDetailsService userDetailsService;
 
+    public JwtTokenProvider(UserDetailsService userDetailsService) { // 위에 key필드 주입되는지 햇깔리니까 @Required안씀
+        this.userDetailsService = userDetailsService;
+    }
 
     @PostConstruct // 빈이 생성되고 의존성 주입이 끝난 후 딱 1번 실행되는 메서드
     protected void init() {
@@ -51,7 +52,7 @@ public class JwtTokenProvider {
      * JWT 토큰 생성
      */
     public String createToken(String email, String role) {
-        Claims claims = Jwts.claims().subject(email);
+        Claims claims = Jwts.claims().subject(email).build();
 
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
