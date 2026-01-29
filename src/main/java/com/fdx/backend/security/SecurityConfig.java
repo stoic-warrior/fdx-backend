@@ -27,8 +27,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter; // 요청 들어올 때 Authorization: Bearer 토큰 꺼내서 검증하고, 맞으면 SecurityContext에 인증 객체 넣어주는 필터(보통)
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint; // 인증이 필요한데 인증이 없거나 실패했을 때(401) 어떤 응답을 줄지 담당
+    private final JwtAuthenticationFilter jwtAuthenticationFilter; // HTTP요청 들어올 때 Jwt토큰 검증하고, 맞으면 SecurityContext에 인증 객체 넣어주는 필터
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint; // 인증이 없거나 실패했을 때(401) 어떤 응답을 줄지 담당
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
