@@ -6,6 +6,7 @@ import com.fdx.backend.domain.dailydata.DailyData;
 import com.fdx.backend.domain.leadmeasure.LeadMeasure;
 import com.fdx.backend.domain.milestone.Milestone;
 import com.fdx.backend.domain.weeklydata.WeeklyData;
+import com.fdx.backend.domain.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -51,6 +52,14 @@ public class Wig {
 
     @Column(length = 20)
     private String unit;   // 단위 (measureType이 NUMERIC일 때만 사용, 예: "kg", "원")
+
+    /**
+     * 소속 사용자 (Many-to-One)
+     * 각 WIG는 한 명의 사용자에게 속함
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     /**
      * Lead Measures (선행지표) - 양방향 관계
@@ -101,6 +110,15 @@ public class Wig {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
+    /**
+     * 편의 메서드: User 설정
+     */
+    public void setUser(User user) {
+        this.user = user;
+        if (user != null && !user.getWigs().contains(this)) {
+            user.getWigs().add(this);
+        }
+    }
 
     /**
      * 편의 메서드: Lead Measure 추가
@@ -189,40 +207,32 @@ public class Wig {
      * NUMERIC 타입 WIG 생성용 팩토리 메서드
      */
     public static Wig createNumericWig(String title, String fromX, String toY,
-                                   LocalDate byWhen, String unit) {
-
-        return Wig.builder() // 빌더 : 생성자 많을 때, 무슨필드인지 가독성up. 필드누락이나 순서 실수 방지
+                                       LocalDate byWhen, String unit, User user) {
+        Wig wig = Wig.builder() // 빌더 : 생성자 많을 때, 무슨필드인지 가독성up. 필드누락이나 순서 실수 방지
                 .title(title)
                 .fromX(fromX)
                 .toY(toY)
                 .byWhen(byWhen)
                 .measureType(MeasureType.NUMERIC)
                 .unit(unit)
-                .leadMeasures(new ArrayList<>())
-                .milestones(new ArrayList<>())
-                .commitments(new ArrayList<>())
-                .weeklyDataList(new ArrayList<>())
-                .dailyDataList(new ArrayList<>())
+                .user(user)
                 .build();
+        return wig;
     }
 
     /**
      * STATE 타입 WIG 생성용 팩토리 메서드
      */
-    public static Wig createStateWig(String title, String fromX,
-                                     String toY, LocalDate byWhen) {
-        return Wig.builder()
+    public static Wig createStateWig(String title, String fromX, String toY,
+                                     LocalDate byWhen, User user) {
+        Wig wig = Wig.builder()
                 .title(title)
                 .fromX(fromX)
                 .toY(toY)
                 .byWhen(byWhen)
                 .measureType(MeasureType.STATE)
-                .leadMeasures(new ArrayList<>())
-                .milestones(new ArrayList<>())
-                .commitments(new ArrayList<>())
-                .weeklyDataList(new ArrayList<>())
-                .dailyDataList(new ArrayList<>())
+                .user(user)
                 .build();
-
+        return wig;
     }
 }
