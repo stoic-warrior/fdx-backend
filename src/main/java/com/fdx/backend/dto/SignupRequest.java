@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-//@AllArgsConstructor //테스트용
+@AllArgsConstructor //테스트용
 @Builder
 public class SignupRequest {
 

@@ -1,7 +1,9 @@
 package com.fdx.backend.domain.user;
 
 import com.fdx.backend.dto.LoginRequest;
+import com.fdx.backend.dto.SignupRequest;
 import com.fdx.backend.dto.TokenResponse;
+import com.fdx.backend.dto.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
