@@ -5,13 +5,12 @@
 -- Users (사용자)
 -- ======================================
 -- 비밀번호: password123 (BCrypt 암호화됨)
+-- Users INSERT 2개 다 수정
 INSERT INTO users (email, password, name, role, created_at, updated_at)
-VALUES ('test@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjqQBzGQD0hpHqP8f8QmZTqHQ.NPUi', '테스트유저', 'USER', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+VALUES ('test@example.com', '$2a$10$EqKcp1WFKs7ILRW7dVKMa.Y2BLvFQHnqPEdalWfbxKJm.Zjv2fava', '테스트유저', 'USER', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 INSERT INTO users (email, password, name, role, created_at, updated_at)
-VALUES ('admin@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjqQBzGQD0hpHqP8f8QmZTqHQ.NPUi', '관리자', 'ADMIN', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
--- ======================================
+VALUES ('admin@example.com', '$2a$10$EqKcp1WFKs7ILRW7dVKMa.Y2BLvFQHnqPEdalWfbxKJm.Zjv2fava', '관리자', 'ADMIN', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);-- ======================================
 -- WIGs (목표)
 -- ======================================
 
