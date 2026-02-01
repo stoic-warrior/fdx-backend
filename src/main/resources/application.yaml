@@ -33,6 +33,12 @@ spring:
 server:
   port: 8080 # 어느 포트로 뜰지
 
+# JWT 설정
+jwt:
+  # 256비트 이상의 Base64 인코딩된 시크릿 키 (운영 환경에서는 환경변수로 관리)
+  secret: dGhpc2lzYXZlcnlsb25nc2VjcmV0a2V5Zm9yand0dG9rZW5nZW5lcmF0aW9uMTIzNDU2Nzg5MA==
+  # 토큰 유효 시간 (24시간 = 86400000ms)
+  expiration: 86400000
 
 # 로깅 설정
 logging:
@@ -40,7 +46,7 @@ logging:
     com.fdx.backend: DEBUG  # 내 프로젝트 코드에서 찍는 로그를 DEBUG 이상부터 다 찍어라
     org.hibernate.SQL: DEBUG  # Hibernate가 만드는 쿼리(SQL)를 로그로 보고 싶다
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE # SQL에 바인딩되는 실제 파라미터 값을 보고 싶을 때
-
+    org.springframework.security: DEBUG
 
 # Swagger/OpenAPI 설정
 springdoc:
