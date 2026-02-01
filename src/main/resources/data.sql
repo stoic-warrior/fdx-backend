@@ -1,13 +1,26 @@
 -- 초기 테스트 데이터
 -- 애플리케이션 시작 시 자동으로 실행됩니다
 
--- WIG 1: 백엔드 개발자 취업 (상태형)
-INSERT INTO wigs (title, fromx, toy, by_when, measure_type, unit, created_at, updated_at)
-VALUES ('백엔드 개발자 취업', '백수', '취업 성공', '2025-12-31', 'STATE', NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+-- ======================================
+-- Users (사용자)
+-- ======================================
+-- 비밀번호: password123 (BCrypt 암호화됨)
+-- Users INSERT 2개 다 수정
+INSERT INTO users (email, password, name, role, created_at, updated_at)
+VALUES ('test@example.com', '$2a$10$EqKcp1WFKs7ILRW7dVKMa.Y2BLvFQHnqPEdalWfbxKJm.Zjv2fava', '테스트유저', 'USER', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
--- WIG 2: 체중 감량 (수치형)
-INSERT INTO wigs (title, fromx, toy, by_when, measure_type, unit, created_at, updated_at)
-VALUES ('체중 감량', '75', '68', '2025-06-30', 'NUMERIC', 'kg', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO users (email, password, name, role, created_at, updated_at)
+VALUES ('admin@example.com', '$2a$10$EqKcp1WFKs7ILRW7dVKMa.Y2BLvFQHnqPEdalWfbxKJm.Zjv2fava', '관리자', 'ADMIN', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);-- ======================================
+-- WIGs (목표)
+-- ======================================
+
+-- WIG 1: 백엔드 개발자 취업 (상태형) - user_id=1
+INSERT INTO wigs (title, fromx, toy, by_when, measure_type, unit, user_id, created_at, updated_at)
+VALUES ('백엔드 개발자 취업', '백수', '취업 성공', '2025-12-31', 'STATE', NULL, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+-- WIG 2: 체중 감량 (수치형) - user_id=1
+INSERT INTO wigs (title, fromx, toy, by_when, measure_type, unit, user_id, created_at, updated_at)
+VALUES ('체중 감량', '75', '68', '2025-06-30', 'NUMERIC', 'kg', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- ======================================
 -- Lead Measures (선행지표)
