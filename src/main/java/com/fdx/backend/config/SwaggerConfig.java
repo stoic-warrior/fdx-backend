@@ -1,9 +1,12 @@
 package com.fdx.backend.config;
 
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,9 +21,9 @@ import java.util.List;
 public class SwaggerConfig {
 
     @Bean
-    public OpenAPI customOpenAPI() { // 빈등록
+    public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .info(new Info() // 문서 상단에 보이는 기본정보
+                .info(new Info()
                         .title("4DX WIG Tracker API")
                         .version("1.0.0")
                         .description("""
@@ -35,9 +38,10 @@ public class SwaggerConfig {
                                 - **Commitments**: 주간 약속 및 이행률 추적
                                 - **Data Tracking**: 일간/주간 실적 데이터 기록
                                 
-                                ## 측정 유형
-                                - **NUMERIC**: 수치형 목표 (예: 체중 75kg → 68kg)
-                                - **STATE**: 상태형 목표 (예: 백수 → 취업 성공)
+                                ## 인증
+                                1. /api/auth/login으로 로그인
+                                2. 받은 accessToken을 Authorize 버튼에 입력
+                                3. 형식: Bearer {토큰}
                                 """)
                         .contact(new Contact()
                                 .name("4DX Team")
@@ -45,13 +49,22 @@ public class SwaggerConfig {
                         .license(new License()
                                 .name("Apache 2.0")
                                 .url("https://www.apache.org/licenses/LICENSE-2.0.html")))
-                .servers(List.of( // 이 API가 실제로 떠있는 주소 목록
+                .servers(List.of(
                         new Server()
                                 .url("http://localhost:8080")
                                 .description("개발 서버"),
                         new Server()
                                 .url("https://api.fdx.com")
                                 .description("운영 서버 (예시)")
-                ));
+                ))
+                // JWT 인증 설정 추가
+                .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
+                .components(new Components()
+                        .addSecuritySchemes("Bearer Authentication",
+                                new SecurityScheme()
+                                        .type(SecurityScheme.Type.HTTP)
+                                        .scheme("bearer")
+                                        .bearerFormat("JWT")
+                                        .description("JWT 토큰을 입력하세요 (Bearer 제외)")));
     }
 }
