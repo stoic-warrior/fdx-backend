@@ -1,6 +1,7 @@
 package com.fdx.backend.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fdx.backend.dto.ErrorResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,7 +24,8 @@ import java.io.IOException;
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     // 빈이 아니므로 @RequiredArgsConstructor안씀
-    private final ObjectMapper objectMapper = new ObjectMapper(); // Java 객체 → JSON 문자열 변환기
+    private final ObjectMapper objectMapper = new ObjectMapper() // Java 객체 → JSON 문자열 변환기
+            .registerModule(new JavaTimeModule());
 
 
     // 인증실패시 이게 호출
