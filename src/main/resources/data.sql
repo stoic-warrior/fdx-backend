@@ -5,12 +5,13 @@
 -- Users (사용자)
 -- ======================================
 -- 비밀번호: password123 (BCrypt 암호화됨)
--- Users INSERT 2개 다 수정
 INSERT INTO users (email, password, name, role, created_at, updated_at)
-VALUES ('test@example.com', '$2a$10$EqKcp1WFKs7ILRW7dVKMa.Y2BLvFQHnqPEdalWfbxKJm.Zjv2fava', '테스트유저', 'USER', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+VALUES ('test@example.com', '$2a$10$QNJceIh.R/ck1ddWH4CdUOOmcHocLjb/P1KEX5Uh67yXRyOoZCHxO', '테스트유저', 'USER', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 INSERT INTO users (email, password, name, role, created_at, updated_at)
-VALUES ('admin@example.com', '$2a$10$EqKcp1WFKs7ILRW7dVKMa.Y2BLvFQHnqPEdalWfbxKJm.Zjv2fava', '관리자', 'ADMIN', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);-- ======================================
+VALUES ('admin@example.com', '$2a$10$QNJceIh.R/ck1ddWH4CdUOOmcHocLjb/P1KEX5Uh67yXRyOoZCHxO', '관리자', 'ADMIN', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+-- ======================================
 -- WIGs (목표)
 -- ======================================
 
@@ -74,6 +75,9 @@ VALUES ('Spring Security 공부', 'W4', TRUE, 1, CURRENT_TIMESTAMP, CURRENT_TIME
 -- WIG 1 (백엔드 개발자 취업)의 W5 Commitments
 INSERT INTO commitments (text, week, completed, wig_id, created_at, updated_at)
 VALUES ('코딩테스트 3문제 풀기', 'W5', FALSE, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+INSERT INTO commitments (text, week, completed, wig_id, created_at, updated_at)
+VALUES ('JPA 심화 학습', 'W5', FALSE, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- WIG 2 (체중 감량)의 W5 Commitments
 INSERT INTO commitments (text, week, completed, wig_id, created_at, updated_at)
