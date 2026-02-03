@@ -1,5 +1,6 @@
 package com.fdx.backend.domain.leadmeasure;
 
+import com.fdx.backend.domain.GoalDirection;
 import com.fdx.backend.domain.wig.Wig;
 import jakarta.persistence.*;
 import lombok.*;
@@ -56,6 +57,16 @@ public class LeadMeasure {
      */
     @Column(nullable = false, length = 20)
     private String unit;
+
+    /**
+     * 목표 방향
+     * MAXIMIZE: 높을수록 좋음 (운동, 코딩)
+     * MINIMIZE: 낮을수록 좋음 (칼로리, 지출)
+     */
+    @Enumerated(EnumType.STRING) // enum 값을 DB에 “문자열 이름” 그대로 저장하라는 뜻
+    @Column(nullable = false, length = 20) // 8자지만 추후에 확장할수도 있으니 20자 제한
+    @Builder.Default
+    private GoalDirection goalDirection = GoalDirection.MAXIMIZE;
 
     /**
      * 소속 WIG (Many-to-One)
