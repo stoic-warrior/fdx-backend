@@ -1,5 +1,6 @@
 package com.fdx.backend.dto;
 
+import com.fdx.backend.domain.GoalDirection;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -30,6 +31,13 @@ public class LeadMeasureRequest {
 
     @NotBlank(message = "단위는 필수입니다")
     private String unit;
+
+    /**
+     * 목표 방향 (기본값: MAXIMIZE)
+     * MAXIMIZE: 높을수록 좋음
+     * MINIMIZE: 낮을수록 좋음
+     */
+    private GoalDirection goalDirection = GoalDirection.MAXIMIZE;
 
     @NotNull(message = "WIG ID는 필수입니다")
     private Long wigId;

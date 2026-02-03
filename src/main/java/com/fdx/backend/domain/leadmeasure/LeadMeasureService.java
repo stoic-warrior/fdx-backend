@@ -1,5 +1,6 @@
 package com.fdx.backend.domain.leadmeasure;
 
+import com.fdx.backend.domain.GoalDirection;
 import com.fdx.backend.domain.wig.Wig;
 import com.fdx.backend.domain.wig.WigRepository;
 import com.fdx.backend.dto.LeadMeasureRequest;
@@ -45,7 +46,8 @@ public class LeadMeasureService {
      */
     @Transactional
     public LeadMeasureResponse createLeadMeasure(LeadMeasureRequest request) {
-        log.info("Lead Measure 생성: name={}, wigId={}", request.getName(), request.getWigId());
+        log.info("Lead Measure 생성: name={}, wigId={}, goalDirection={}",
+                request.getName(), request.getWigId(), request.getGoalDirection());
 
         // WIG조회
         Wig wig = wigRepository.findById(request.getWigId())
@@ -58,6 +60,9 @@ public class LeadMeasureService {
                 .dailyTarget(request.getDailyTarget())
                 .weeklyTarget(request.getWeeklyTarget())
                 .unit(request.getUnit())
+                .goalDirection(request.getGoalDirection() != null
+                        ? request.getGoalDirection()
+                        : GoalDirection.MAXIMIZE)
                 .wig(wig)
                 .build();
 
@@ -88,6 +93,10 @@ public class LeadMeasureService {
         leadMeasure.setDailyTarget(request.getDailyTarget());
         leadMeasure.setWeeklyTarget(request.getWeeklyTarget());
         leadMeasure.setUnit(request.getUnit());
+        if (request.getGoalDirection() != null) { // null이면 기존 값 유지 (set 안 함)
+            leadMeasure.setGoalDirection(request.getGoalDirection());
+        }
+
 
         log.info("Lead Measure 수정 완료: id={}", id);
 

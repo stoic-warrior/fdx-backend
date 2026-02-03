@@ -29,18 +29,18 @@ VALUES ('체중 감량', '75', '68', '2025-06-30', 'NUMERIC', 'kg', 1, '2025-01-
 -- ======================================
 
 -- WIG 1 (백엔드 개발자 취업)의 Lead Measures
-INSERT INTO lead_measures (name, daily_target, weekly_target, unit, wig_id, created_at, updated_at)
-VALUES ('코딩 시간', 6, 42, '시간', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO lead_measures (name, daily_target, weekly_target, unit, goal_direction, wig_id, created_at, updated_at)
+VALUES ('코딩 시간', 6, 42, '시간', 'MAXIMIZE', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO lead_measures (name, daily_target, weekly_target, unit, wig_id, created_at, updated_at)
-VALUES ('이력서 제출', 0.5, 3, '개', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO lead_measures (name, daily_target, weekly_target, unit, goal_direction, wig_id, created_at, updated_at)
+VALUES ('이력서 제출', 0.5, 3, '개', 'MAXIMIZE', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- WIG 2 (체중 감량)의 Lead Measures
-INSERT INTO lead_measures (name, daily_target, weekly_target, unit, wig_id, created_at, updated_at)
-VALUES ('운동 시간', 60, 420, '분', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO lead_measures (name, daily_target, weekly_target, unit, goal_direction, wig_id, created_at, updated_at)
+VALUES ('운동 시간', 60, 420, '분', 'MAXIMIZE', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO lead_measures (name, daily_target, weekly_target, unit, wig_id, created_at, updated_at)
-VALUES ('칼로리 섭취', 1800, 12600, 'kcal', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO lead_measures (name, daily_target, weekly_target, unit, goal_direction, wig_id, created_at, updated_at)
+VALUES ('칼로리 섭취', 1800, 12600, 'kcal', 'MINIMIZE', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- ======================================
 -- Milestones (마일스톤 - STATE 타입 WIG 전용)
