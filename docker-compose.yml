@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # ==========================================
+  # Spring Boot 애플리케이션
+  # ==========================================
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fdx-backend
+    ports:
+      - "8080:8080"
+    environment:
+      # 프로파일 지정
+      - SPRING_PROFILES_ACTIVE=prod
+      # DB 연결 정보
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_NAME=fdxdb
+      - DB_USERNAME=fdxuser
+      - DB_PASSWORD=fdxpass123!
+      # JWT 설정
+      - JWT_SECRET=cHJvZHVjdGlvblNlY3JldEtleUZvcjRkeEJhY2tlbmRBcHBsaWNhdGlvbjEyMzQ1Njc4OTA=
+      # Swagger 활성화 (로컬 테스트용)
+      - SWAGGER_ENABLED=true
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - fdx-network
+    restart: unless-stopped
+
+  # ==========================================
+  # MySQL 데이터베이스 (로컬 테스트용)
+  # ==========================================
+  db:
+    image: mysql:8.0
+    container_name: fdx-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpass123!
+      - MYSQL_DATABASE=fdxdb
+      - MYSQL_USER=fdxuser
+      - MYSQL_PASSWORD=fdxpass123!
+      - TZ=Asia/Seoul
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./init-db:/docker-entrypoint-initdb.d  # 초기화 SQL
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpass123!"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - fdx-network
+    restart: unless-stopped
+
+# 볼륨 정의 (데이터 영속성)
+volumes:
+  mysql-data:
+
+# 네트워크 정의
+networks:
+  fdx-network:
+    driver: bridge
