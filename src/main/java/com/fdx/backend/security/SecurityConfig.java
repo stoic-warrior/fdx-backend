@@ -78,7 +78,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:3000",  // React 개발 서버
-                "http://localhost:5173"   // Vite 개발 서버
+                "http://localhost:5173",   // Vite 개발 서버
                 "https://fdx-frontend.vercel.app/"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
