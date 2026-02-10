@@ -32,6 +32,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'  // 헬스체크용
 
+    // ⭐ OAuth2 Client 추가 (Google, Kakao, Naver)
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
     // Swagger/OpenAPI
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.0'
 
