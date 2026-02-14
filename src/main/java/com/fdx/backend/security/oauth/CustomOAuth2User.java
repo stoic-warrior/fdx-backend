@@ -18,6 +18,9 @@ import java.util.Map;
  *  * 2) 우리 DB에 저장된 User 엔티티(user)
  *  * 이 두 개를 한 덩어리로 묶어서
  *  * Spring Security가 이해할 수 있는 OAuth2User로 만들어 주는 클래스
+ *
+ *
+ *  사실 getAuthorities() 계약 때문에 합치는거지 사실 attributes 거의 쓸일없는듯
  */
 @Getter //
 public class CustomOAuth2User implements OAuth2User {
