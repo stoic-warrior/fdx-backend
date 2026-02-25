@@ -5,11 +5,11 @@
 -- Users (사용자)
 -- ======================================
 -- 비밀번호: password123 (BCrypt 암호화됨)
-INSERT INTO users (email, password, name, role, created_at, updated_at)
-VALUES ('test@example.com', '$2a$10$QNJceIh.R/ck1ddWH4CdUOOmcHocLjb/P1KEX5Uh67yXRyOoZCHxO', '테스트유저', 'USER', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO users (email, password, name, role, provider, created_at, updated_at)
+VALUES ('test@example.com', '$2a$10$QNJceIh.R/ck1ddWH4CdUOOmcHocLjb/P1KEX5Uh67yXRyOoZCHxO', '테스트유저', 'USER', 'LOCAL', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO users (email, password, name, role, created_at, updated_at)
-VALUES ('admin@example.com', '$2a$10$QNJceIh.R/ck1ddWH4CdUOOmcHocLjb/P1KEX5Uh67yXRyOoZCHxO', '관리자', 'ADMIN', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO users (email, password, name, role, provider, created_at, updated_at)
+VALUES ('admin@example.com', '$2a$10$QNJceIh.R/ck1ddWH4CdUOOmcHocLjb/P1KEX5Uh67yXRyOoZCHxO', '관리자', 'ADMIN', 'LOCAL', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- ======================================
 -- WIGs (목표)
@@ -112,35 +112,19 @@ VALUES ('W2', 73.8, 73, 385, 12950, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- WIG 1의 W1 일간 데이터 (2025-01-06 ~ 2025-01-10, 월~금)
 INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, wig_id, created_at, updated_at)
-VALUES ('2025-01-06', 'W1', '월', 7, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+VALUES ('2025-01-06', 'W1', '월', 5, 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, wig_id, created_at, updated_at)
-VALUES ('2025-01-07', 'W1', '화', 6, 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+VALUES ('2025-01-07', 'W1', '화', 7, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, wig_id, created_at, updated_at)
-VALUES ('2025-01-08', 'W1', '수', 8, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+VALUES ('2025-01-08', 'W1', '수', 8, 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, wig_id, created_at, updated_at)
-VALUES ('2025-01-09', 'W1', '목', 5, 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+VALUES ('2025-01-09', 'W1', '목', 6, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, wig_id, created_at, updated_at)
 VALUES ('2025-01-10', 'W1', '금', 9, 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
--- WIG 1의 W2 일간 데이터 (2025-01-13 ~ 2025-01-17, 월~금)
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, wig_id, created_at, updated_at)
-VALUES ('2025-01-13', 'W2', '월', 6, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, wig_id, created_at, updated_at)
-VALUES ('2025-01-14', 'W2', '화', 7, 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, wig_id, created_at, updated_at)
-VALUES ('2025-01-15', 'W2', '수', 8, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, wig_id, created_at, updated_at)
-VALUES ('2025-01-16', 'W2', '목', 10, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, wig_id, created_at, updated_at)
-VALUES ('2025-01-17', 'W2', '금', 15, 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- WIG 2의 W1 일간 데이터 (2025-01-06 ~ 2025-01-10, 월~금)
 INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, wig_id, created_at, updated_at)
