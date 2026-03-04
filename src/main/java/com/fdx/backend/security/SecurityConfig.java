@@ -97,9 +97,10 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of(
-                "http://localhost:3000",  // React 개발 서버
-                "http://localhost:5173",   // Vite 개발 서버
-                frontendUrl
+                "http://localhost:3000",
+                "http://localhost:5173",
+                frontendUrl,
+                "http://16.176.34.92.nip.io:8080"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));

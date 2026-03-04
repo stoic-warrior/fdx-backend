@@ -69,3 +69,7 @@ management:
   endpoint:
     health:
       show-details: never
+
+# 프론트엔드 URL (OAuth 리다이렉트용)
+app:
+  frontend-url: https://fdx-frontend.vercel.app
