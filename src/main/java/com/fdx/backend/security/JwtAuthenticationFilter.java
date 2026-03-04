@@ -30,12 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter { // http요�
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        // OAuth 관련 경로는 필터 스킵
-        String path = request.getRequestURI();
-        if (path.startsWith("/oauth2/") || path.startsWith("/login/oauth2/")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+
 
         // 1. Request Header에서 JWT 토큰 추출
         String bearerToken = request.getHeader("Authorization"); // 헤서에서 key가 Authorization인 값 추출. "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6..."
