@@ -1,6 +1,9 @@
 package com.fdx.backend.security;
 
+import com.fdx.backend.security.oauth.CustomOAuth2UserService;
+import com.fdx.backend.security.oauth.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,6 +33,13 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter; // HTTP요청 들어올 때 Jwt토큰 검증하고, 맞으면 SecurityContext에 인증 객체 넣어주는 필터
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint; // 인증이 없거나 실패했을 때(401) 어떤 응답을 줄지 담당
 
+    // OAuth2 관련 빈 주입
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+
+    @Value("${app.frontend-url}") // application.yml에 정의된 값 주입
+    private String frontendUrl;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -47,6 +57,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/auth/**",           // 로그인, 회원가입
+                                "/oauth2/**",             // OAuth2 엔드포인트
+                                "/login/oauth2/**",       // OAuth2 콜백
                                 "/h2-console/**",         // H2 콘솔
                                 "/swagger-ui/**",         // Swagger UI
                                 "/swagger-ui.html",
@@ -59,6 +71,14 @@ public class SecurityConfig {
                 // 인증 실패 처리 (401 커스텀)
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint))
+
+                // ⭐ OAuth2 로그인 설정
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService)  // OAuth2 사용자 정보 처리
+                        )
+                        .successHandler(oAuth2SuccessHandler)  // 로그인 성공 시 JWT 발급
+                )
 
                 // H2 콘솔용 설정 (iframe 허용). H2 콘솔은 브라우저에서 iframe을 쓰는 경우가 있어 X-Frame-Options 때문에 막힐 수 있음. sameOrigin()으로 같은 오리진에서의 iframe 렌더는 허용.
                 .headers(headers -> headers
@@ -79,7 +99,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:3000",  // React 개발 서버
                 "http://localhost:5173",   // Vite 개발 서버
-                "https://fdx-frontend.vercel.app/"
+                frontendUrl
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));

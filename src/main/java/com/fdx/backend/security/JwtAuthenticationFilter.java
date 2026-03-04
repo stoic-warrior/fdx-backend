@@ -30,6 +30,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter { // http요�
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
+
+
         // 1. Request Header에서 JWT 토큰 추출
         String bearerToken = request.getHeader("Authorization"); // 헤서에서 key가 Authorization인 값 추출. "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6..."
         String token = jwtTokenProvider.resolveToken(bearerToken); // "Bearer " 제거, 순수 JWT 문자열만 반환

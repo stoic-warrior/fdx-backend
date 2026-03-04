@@ -13,6 +13,7 @@ import java.util.List;
 /**
  * User (사용자) 엔티티
  * 회원 정보 및 인증 관리
+ * 일반 로그인 + OAuth 로그인 모두 지원
  */
 @Entity
 @Table(name = "users")
@@ -35,8 +36,9 @@ public class User {
 
     /**
      * 비밀번호 (BCrypt 암호화 저장)
+     * OAuth 사용자는 null 가능
      */
-    @Column(nullable = false)
+    @Column
     private String password;
 
     /**
@@ -52,6 +54,27 @@ public class User {
     @Column(nullable = false)
     @Builder.Default
     private Role role = Role.USER;
+
+    /**
+     * ⭐ OAuth Provider (GOOGLE, KAKAO, NAVER, LOCAL)
+     * LOCAL = 일반 이메일/비밀번호 로그인
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    private AuthProvider provider = AuthProvider.LOCAL;
+
+    /**
+     * ⭐ OAuth Provider의 사용자 고유 ID
+     */
+    @Column
+    private String providerId;
+
+    /**
+     * 프로필 이미지 URL (OAuth에서 가져옴)
+     */
+    @Column
+    private String profileImageUrl;
 
     /**
      * 사용자의 WIG 목록 (1:N)
@@ -83,6 +106,15 @@ public class User {
     public void removeWig(Wig wig) {
         wigs.remove(wig);
         wig.setUser(null);
+    }
+
+    /**
+     * OAuth 사용자 정보 업데이트
+     */
+    public User updateOAuthInfo(String name, String profileImageUrl) {
+        this.name = name;
+        this.profileImageUrl = profileImageUrl;
+        return this;
     }
 
 }
