@@ -4,6 +4,7 @@ import com.fdx.backend.dto.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -89,6 +90,23 @@ public class GlobalExceptionHandler {
 
     }
 
+    /**
+     * 인증 실패 처리 (비밀번호 틀림 등)
+     */
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException e) {
+        log.error("인증 실패: {}", e.getMessage());
+
+        ErrorResponse error = ErrorResponse.of(
+                "AUTHENTICATION_FAILED",
+                "이메일 또는 비밀번호가 올바르지 않습니다",
+                HttpStatus.UNAUTHORIZED.value()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(error);
+    }
 
     /**
      * 예상하지 못한 모든 예외 처리
