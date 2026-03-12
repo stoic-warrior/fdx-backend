@@ -29,6 +29,9 @@ public class WeeklyDataRequest {
     // Lead Measures 실적
     private Double lead1;
     private Double lead2;
+    private Double lead3;
+    private Double lead4;
+    private Double lead5;
 
     @NotNull(message = "WIG ID는 필수입니다")
     private Long wigId;

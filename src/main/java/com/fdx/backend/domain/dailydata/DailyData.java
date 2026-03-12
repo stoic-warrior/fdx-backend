@@ -62,6 +62,18 @@ public class DailyData {
     @Column
     private Double lead2;
 
+    /** Lead Measure 3 실적 */
+    @Column
+    private Double lead3;
+
+    /** Lead Measure 4 실적 */
+    @Column
+    private Double lead4;
+
+    /** Lead Measure 5 실적 */
+    @Column
+    private Double lead5;
+
     /**
      * 소속 WIG (Many-to-One)
      */

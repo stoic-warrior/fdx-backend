@@ -1,5 +1,6 @@
 -- 초기 테스트 데이터
 -- 애플리케이션 시작 시 자동으로 실행됩니다
+-- lead1~lead5 확장 버전 (리드매셔 최대 5개 지원)
 
 -- ======================================
 -- Users (사용자)
@@ -89,71 +90,77 @@ VALUES ('야식 끊기', 'W1', FALSE, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- ======================================
 -- Weekly Data (주간 실적)
+-- lead3, lead4, lead5 컬럼 추가 (미사용 시 NULL)
 -- ======================================
 
 -- WIG 1 (백엔드 개발자 취업 - STATE 타입)의 주간 데이터
-INSERT INTO weekly_data (week, milestone_progress, lead1, lead2, wig_id, created_at, updated_at)
-VALUES ('W1', 20, 35, 2, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+-- 리드매셔 2개만 사용 중이므로 lead3~5는 NULL
+INSERT INTO weekly_data (week, milestone_progress, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
+VALUES ('W1', 20, 35, 2, NULL, NULL, NULL, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO weekly_data (week, milestone_progress, lead1, lead2, wig_id, created_at, updated_at)
-VALUES ('W2', 40, 46, 3, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO weekly_data (week, milestone_progress, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
+VALUES ('W2', 40, 46, 3, NULL, NULL, NULL, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- WIG 2 (체중 감량 - NUMERIC 타입)의 주간 데이터
-INSERT INTO weekly_data (week, actual, target, lead1, lead2, wig_id, created_at, updated_at)
-VALUES ('W1', 74.5, 74, 320, 13500, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+-- 리드매셔 2개만 사용 중이므로 lead3~5는 NULL
+INSERT INTO weekly_data (week, actual, target, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
+VALUES ('W1', 74.5, 74, 320, 13500, NULL, NULL, NULL, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO weekly_data (week, actual, target, lead1, lead2, wig_id, created_at, updated_at)
-VALUES ('W2', 73.8, 73, 385, 12950, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO weekly_data (week, actual, target, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
+VALUES ('W2', 73.8, 73, 385, 12950, NULL, NULL, NULL, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- ======================================
 -- Daily Data (일간 실적)
+-- lead3, lead4, lead5 컬럼 추가 (미사용 시 NULL)
 -- WIG created_at이 2025-01-01이므로 그 이후 날짜로 설정
 -- ======================================
 
 -- WIG 1의 W1 일간 데이터 (2025-01-06 ~ 2025-01-10, 월~금)
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, wig_id, created_at, updated_at)
-VALUES ('2025-01-06', 'W1', '월', 5, 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+-- lead1=코딩 시간(시간), lead2=이력서 제출(개), lead3~5=미사용
+INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
+VALUES ('2025-01-06', 'W1', '월', 5, 0, NULL, NULL, NULL, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, wig_id, created_at, updated_at)
-VALUES ('2025-01-07', 'W1', '화', 7, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
+VALUES ('2025-01-07', 'W1', '화', 7, 1, NULL, NULL, NULL, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, wig_id, created_at, updated_at)
-VALUES ('2025-01-08', 'W1', '수', 8, 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
+VALUES ('2025-01-08', 'W1', '수', 8, 0, NULL, NULL, NULL, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, wig_id, created_at, updated_at)
-VALUES ('2025-01-09', 'W1', '목', 6, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
+VALUES ('2025-01-09', 'W1', '목', 6, 1, NULL, NULL, NULL, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, wig_id, created_at, updated_at)
-VALUES ('2025-01-10', 'W1', '금', 9, 0, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
+VALUES ('2025-01-10', 'W1', '금', 9, 0, NULL, NULL, NULL, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- WIG 2의 W1 일간 데이터 (2025-01-06 ~ 2025-01-10, 월~금)
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, wig_id, created_at, updated_at)
-VALUES ('2025-01-06', 'W1', '월', 60, 1750, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+-- lead1=운동 시간(분), lead2=칼로리 섭취(kcal), lead3~5=미사용
+INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
+VALUES ('2025-01-06', 'W1', '월', 60, 1750, NULL, NULL, NULL, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, wig_id, created_at, updated_at)
-VALUES ('2025-01-07', 'W1', '화', 45, 1900, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
+VALUES ('2025-01-07', 'W1', '화', 45, 1900, NULL, NULL, NULL, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, wig_id, created_at, updated_at)
-VALUES ('2025-01-08', 'W1', '수', 70, 1700, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
+VALUES ('2025-01-08', 'W1', '수', 70, 1700, NULL, NULL, NULL, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, wig_id, created_at, updated_at)
-VALUES ('2025-01-09', 'W1', '목', 50, 1850, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
+VALUES ('2025-01-09', 'W1', '목', 50, 1850, NULL, NULL, NULL, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, wig_id, created_at, updated_at)
-VALUES ('2025-01-10', 'W1', '금', 95, 2300, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
+VALUES ('2025-01-10', 'W1', '금', 95, 2300, NULL, NULL, NULL, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- WIG 2의 W2 일간 데이터 (2025-01-13 ~ 2025-01-17, 월~금)
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, wig_id, created_at, updated_at)
-VALUES ('2025-01-13', 'W2', '월', 55, 1800, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
+VALUES ('2025-01-13', 'W2', '월', 55, 1800, NULL, NULL, NULL, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, wig_id, created_at, updated_at)
-VALUES ('2025-01-14', 'W2', '화', 80, 1650, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
+VALUES ('2025-01-14', 'W2', '화', 80, 1650, NULL, NULL, NULL, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, wig_id, created_at, updated_at)
-VALUES ('2025-01-15', 'W2', '수', 65, 1750, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
+VALUES ('2025-01-15', 'W2', '수', 65, 1750, NULL, NULL, NULL, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, wig_id, created_at, updated_at)
-VALUES ('2025-01-16', 'W2', '목', 90, 1700, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
+VALUES ('2025-01-16', 'W2', '목', 90, 1700, NULL, NULL, NULL, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, wig_id, created_at, updated_at)
-VALUES ('2025-01-17', 'W2', '금', 95, 2050, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
+VALUES ('2025-01-17', 'W2', '금', 95, 2050, NULL, NULL, NULL, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
