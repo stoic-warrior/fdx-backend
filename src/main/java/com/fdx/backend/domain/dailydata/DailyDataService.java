@@ -99,6 +99,9 @@ public class DailyDataService {
                 .dayOfWeek(request.getDayOfWeek())
                 .lead1(request.getLead1())
                 .lead2(request.getLead2())
+                .lead3(request.getLead3())
+                .lead4(request.getLead4())
+                .lead5(request.getLead5())
                 .wig(wig)
                 .build();
 
@@ -125,6 +128,9 @@ public class DailyDataService {
         dailyData.setDayOfWeek(request.getDayOfWeek());
         dailyData.setLead1(request.getLead1());
         dailyData.setLead2(request.getLead2());
+        dailyData.setLead3(request.getLead3());
+        dailyData.setLead4(request.getLead4());
+        dailyData.setLead5(request.getLead5());
 
         log.info("일간 데이터 수정 완료: id={}", id);
 

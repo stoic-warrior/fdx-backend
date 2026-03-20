@@ -25,6 +25,9 @@ public class DailyDataResponse {
     private String dayOfWeek;
     private Double lead1;
     private Double lead2;
+    private Double lead3;
+    private Double lead4;
+    private Double lead5;
     private Long wigId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -40,6 +43,9 @@ public class DailyDataResponse {
                 .dayOfWeek(dailyData.getDayOfWeek())
                 .lead1(dailyData.getLead1())
                 .lead2(dailyData.getLead2())
+                .lead3(dailyData.getLead3())
+                .lead4(dailyData.getLead4())
+                .lead5(dailyData.getLead5())
                 .wigId(dailyData.getWig().getId())
                 .createdAt(dailyData.getCreatedAt())
                 .updatedAt(dailyData.getUpdatedAt())

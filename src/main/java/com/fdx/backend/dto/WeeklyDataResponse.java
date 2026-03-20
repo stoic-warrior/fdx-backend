@@ -25,6 +25,9 @@ public class WeeklyDataResponse {
     private Double target;
     private Double lead1;
     private Double lead2;
+    private Double lead3;
+    private Double lead4;
+    private Double lead5;
     private Long wigId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -41,6 +44,9 @@ public class WeeklyDataResponse {
                 .target(weeklyData.getTarget())
                 .lead1(weeklyData.getLead1())
                 .lead2(weeklyData.getLead2())
+                .lead3(weeklyData.getLead3())
+                .lead4(weeklyData.getLead4())
+                .lead5(weeklyData.getLead5())
                 .wigId(weeklyData.getWig().getId())
                 .createdAt(weeklyData.getCreatedAt())
                 .updatedAt(weeklyData.getUpdatedAt())

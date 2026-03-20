@@ -80,6 +80,9 @@ public class WeeklyDataService {
                 .target(request.getTarget())
                 .lead1(request.getLead1())
                 .lead2(request.getLead2())
+                .lead3(request.getLead3())
+                .lead4(request.getLead4())
+                .lead5(request.getLead5())
                 .wig(wig) // FK
                 .build();
 
@@ -107,6 +110,9 @@ public class WeeklyDataService {
         weeklyData.setTarget(request.getTarget());
         weeklyData.setLead1(request.getLead1());
         weeklyData.setLead2(request.getLead2());
+        weeklyData.setLead3(request.getLead3());
+        weeklyData.setLead4(request.getLead4());
+        weeklyData.setLead5(request.getLead5());
 
         log.info("주간 데이터 수정 완료: id={}", id);
 

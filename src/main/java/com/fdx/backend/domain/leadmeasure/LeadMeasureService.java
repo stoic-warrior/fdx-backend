@@ -24,6 +24,7 @@ public class LeadMeasureService {
 
     private final LeadMeasureRepository leadMeasureRepository;
     private final WigRepository wigRepository;
+    private static final int MAX_LEAD_MEASURE_COUNT = 5; // Lead Measure 최대 갯수 제한
 
     /**
      * 특정 WIG의 모든 Lead Measures 조회
@@ -53,6 +54,14 @@ public class LeadMeasureService {
         Wig wig = wigRepository.findById(request.getWigId())
                 .orElseThrow(() -> new IllegalArgumentException(
                         "해당 WIG를 찾을 수 없습니다: " + request.getWigId()));
+
+        // Lead Measure 갯수 제한 검증
+        long currentCount = leadMeasureRepository.countByWigId(request.getWigId());
+        if (currentCount >= MAX_LEAD_MEASURE_COUNT) {
+            throw new IllegalStateException(
+                    String.format("Lead Measure는 WIG당 최대 %d개까지만 생성할 수 있습니다. (현재: %d개)",
+                            MAX_LEAD_MEASURE_COUNT, currentCount));
+        }
 
         // Lead Measure 생성
         LeadMeasure leadMeasure = LeadMeasure.builder()
