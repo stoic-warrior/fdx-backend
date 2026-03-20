@@ -2,6 +2,7 @@ package com.fdx.backend.domain.dailydata;
 
 import com.fdx.backend.dto.DailyDataRequest;
 import com.fdx.backend.dto.DailyDataResponse;
+import com.fdx.backend.dto.StreakResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -72,6 +73,17 @@ public class DailyDataController {
         List<DailyDataResponse> dailyData =
                 dailyDataService.getDailyDataByDateRange(wigId, startDate, endDate);
         return ResponseEntity.ok(dailyData);
+    }
+
+    /**
+     * 특정 WIG의 연속달성 streak 조회
+     * GET /api/wigs/{wigId}/streak
+     */
+    @GetMapping("/api/wigs/{wigId}/streak")
+    public ResponseEntity<StreakResponse> getStreak(@PathVariable Long wigId) {
+        log.info("GET /api/wigs/{}/streak - streak 조회 요청", wigId);
+        StreakResponse streak = dailyDataService.getStreak(wigId);
+        return ResponseEntity.ok(streak);
     }
 
     /**
