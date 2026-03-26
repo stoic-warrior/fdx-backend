@@ -203,10 +203,12 @@ public class DailyDataService {
             DailyData data = dataMap.get(date);
             if (data == null) break;
             boolean allAchieved = true;
+            boolean anyChecked = false;
             for (int i = 0; i < leadMeasures.size(); i++) {
                 LeadMeasure lm = leadMeasures.get(i);
                 // 해당 날짜에 존재하지 않았던 리드매셔는 skip (실패로 보지 않음)
                 if (date.isBefore(lm.getCreatedAt().toLocalDate())) continue;
+                anyChecked = true;
                 Double actual = getLeadValue(data, i);
                 if (actual == null) { allAchieved = false; break; }
                 boolean achieved = lm.getGoalDirection() == GoalDirection.MAXIMIZE
@@ -214,7 +216,8 @@ public class DailyDataService {
                         : actual <= lm.getDailyTarget();
                 if (!achieved) { allAchieved = false; break; }
             }
-            if (!allAchieved) break;
+            // 해당 날짜에 적용 가능한 리드매셔가 하나도 없으면 streak 중단
+            if (!allAchieved || !anyChecked) break;
             overallStreak++;
             date = date.minusDays(1);
         }
