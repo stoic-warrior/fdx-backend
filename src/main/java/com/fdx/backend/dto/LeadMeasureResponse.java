@@ -1,6 +1,7 @@
 package com.fdx.backend.dto;
 
 import com.fdx.backend.domain.GoalDirection;
+import com.fdx.backend.domain.LeadMeasureType;
 import com.fdx.backend.domain.leadmeasure.LeadMeasure;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +25,7 @@ public class LeadMeasureResponse {
     private Double weeklyTarget;
     private String unit;
     private GoalDirection goalDirection;
+    private LeadMeasureType leadMeasureType;
     private Long wigId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -39,6 +41,7 @@ public class LeadMeasureResponse {
                 .weeklyTarget(leadMeasure.getWeeklyTarget())
                 .unit(leadMeasure.getUnit())
                 .goalDirection(leadMeasure.getGoalDirection())
+                .leadMeasureType(leadMeasure.getLeadMeasureType())
                 .wigId(leadMeasure.getWig().getId())
                 .createdAt(leadMeasure.getCreatedAt())
                 .updatedAt(leadMeasure.getUpdatedAt())

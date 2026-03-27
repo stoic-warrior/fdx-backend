@@ -1,6 +1,7 @@
 package com.fdx.backend.dto;
 
 import com.fdx.backend.domain.GoalDirection;
+import com.fdx.backend.domain.LeadMeasureType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -21,15 +22,13 @@ public class LeadMeasureRequest {
     @NotBlank(message = "선행지표 이름은 필수입니다")
     private String name;
 
-    @NotNull(message = "일일 목표는 필수입니다")
+    // BOOLEAN 타입이면 서비스에서 자동 설정하므로 nullable 허용
     @Positive(message = "일일 목표는 0보다 커야 합니다")
     private Double dailyTarget;
 
-    @NotNull(message = "주간 목표는 필수입니다")
     @Positive(message = "주간 목표는 0보다 커야 합니다")
     private Double weeklyTarget;
 
-    @NotBlank(message = "단위는 필수입니다")
     private String unit;
 
     /**
@@ -38,6 +37,13 @@ public class LeadMeasureRequest {
      * MINIMIZE: 낮을수록 좋음
      */
     private GoalDirection goalDirection = GoalDirection.MAXIMIZE;
+
+    /**
+     * 측정 유형 (기본값: NUMERIC)
+     * NUMERIC: 수치형 (숫자 입력)
+     * BOOLEAN: OX형 (했다/안했다)
+     */
+    private LeadMeasureType leadMeasureType = LeadMeasureType.NUMERIC;
 
     @NotNull(message = "WIG ID는 필수입니다")
     private Long wigId;

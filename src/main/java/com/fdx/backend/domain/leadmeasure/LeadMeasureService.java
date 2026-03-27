@@ -1,6 +1,7 @@
 package com.fdx.backend.domain.leadmeasure;
 
 import com.fdx.backend.domain.GoalDirection;
+import com.fdx.backend.domain.LeadMeasureType;
 import com.fdx.backend.domain.wig.Wig;
 import com.fdx.backend.domain.wig.WigRepository;
 import com.fdx.backend.dto.LeadMeasureRequest;
@@ -63,15 +64,33 @@ public class LeadMeasureService {
                             MAX_LEAD_MEASURE_COUNT, currentCount));
         }
 
+        // BOOLEAN 타입이면 기본값 강제 설정
+        LeadMeasureType type = request.getLeadMeasureType() != null
+                ? request.getLeadMeasureType()
+                : LeadMeasureType.NUMERIC;
+
+        Double dailyTarget = request.getDailyTarget();
+        Double weeklyTarget = request.getWeeklyTarget();
+        String unit = request.getUnit();
+        GoalDirection direction = request.getGoalDirection() != null
+                ? request.getGoalDirection()
+                : GoalDirection.MAXIMIZE;
+
+        if (type == LeadMeasureType.BOOLEAN) {
+            dailyTarget = 1.0;
+            weeklyTarget = 7.0;
+            unit = "회";
+            direction = GoalDirection.MAXIMIZE;
+        }
+
         // Lead Measure 생성
         LeadMeasure leadMeasure = LeadMeasure.builder()
                 .name(request.getName())
-                .dailyTarget(request.getDailyTarget())
-                .weeklyTarget(request.getWeeklyTarget())
-                .unit(request.getUnit())
-                .goalDirection(request.getGoalDirection() != null
-                        ? request.getGoalDirection()
-                        : GoalDirection.MAXIMIZE)
+                .dailyTarget(dailyTarget)
+                .weeklyTarget(weeklyTarget)
+                .unit(unit)
+                .goalDirection(direction)
+                .leadMeasureType(type)
                 .wig(wig)
                 .build();
 
@@ -99,11 +118,23 @@ public class LeadMeasureService {
 
         // 엔티티 수정
         leadMeasure.setName(request.getName());
-        leadMeasure.setDailyTarget(request.getDailyTarget());
-        leadMeasure.setWeeklyTarget(request.getWeeklyTarget());
-        leadMeasure.setUnit(request.getUnit());
-        if (request.getGoalDirection() != null) { // null이면 기존 값 유지 (set 안 함)
-            leadMeasure.setGoalDirection(request.getGoalDirection());
+        if (request.getLeadMeasureType() != null) {
+            leadMeasure.setLeadMeasureType(request.getLeadMeasureType());
+        }
+
+        // BOOLEAN 타입이면 기본값 강제 설정
+        if (leadMeasure.getLeadMeasureType() == LeadMeasureType.BOOLEAN) {
+            leadMeasure.setDailyTarget(1.0);
+            leadMeasure.setWeeklyTarget(7.0);
+            leadMeasure.setUnit("회");
+            leadMeasure.setGoalDirection(GoalDirection.MAXIMIZE);
+        } else {
+            leadMeasure.setDailyTarget(request.getDailyTarget());
+            leadMeasure.setWeeklyTarget(request.getWeeklyTarget());
+            leadMeasure.setUnit(request.getUnit());
+            if (request.getGoalDirection() != null) {
+                leadMeasure.setGoalDirection(request.getGoalDirection());
+            }
         }
 
 

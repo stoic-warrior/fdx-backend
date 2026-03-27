@@ -1,6 +1,7 @@
 package com.fdx.backend.domain.leadmeasure;
 
 import com.fdx.backend.domain.GoalDirection;
+import com.fdx.backend.domain.LeadMeasureType;
 import com.fdx.backend.domain.wig.Wig;
 import jakarta.persistence.*;
 import lombok.*;
@@ -67,6 +68,16 @@ public class LeadMeasure {
     @Column(nullable = false, length = 20) // 8자지만 추후에 확장할수도 있으니 20자 제한
     @Builder.Default
     private GoalDirection goalDirection = GoalDirection.MAXIMIZE;
+
+    /**
+     * 측정 유형
+     * NUMERIC: 수치형 (숫자 입력)
+     * BOOLEAN: OX형 (했다/안했다)
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    @Builder.Default
+    private LeadMeasureType leadMeasureType = LeadMeasureType.NUMERIC;
 
     /**
      * 소속 WIG (Many-to-One)
