@@ -88,9 +88,9 @@ public class DailyDataService {
      * - 데이터 미입력일은 streak 중단
      */
     public StreakResponse getStreak(Long wigId) {
-        if (!wigRepository.existsById(wigId)) {
-            throw new IllegalArgumentException("해당 WIG를 찾을 수 없습니다: " + wigId);
-        }
+        Wig wig = wigRepository.findById(wigId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 WIG를 찾을 수 없습니다: " + wigId));
+        LocalDate wigCreatedDate = wig.getCreatedAt().toLocalDate();
 
         List<LeadMeasure> leadMeasures = leadMeasureRepository.findByWigId(wigId).stream()
                 .sorted(Comparator.comparing(LeadMeasure::getId))
@@ -153,11 +153,10 @@ public class DailyDataService {
                 );
             }
 
-            LocalDate lmCreatedDate = lm.getCreatedAt().toLocalDate();
             LocalDate date = todayAchieved ? today : today.minusDays(1);
             while (true) {
-                // 리드매셔 생성일 이전이면 "존재하지 않았던 것"이므로 끊지 않고 종료
-                if (date.isBefore(lmCreatedDate)) break;
+                // WIG 생성일 이전이면 streak 종료
+                if (date.isBefore(wigCreatedDate)) break;
                 DailyData data = dataMap.get(date);
                 if (data == null) break;
                 Double actual = getLeadValue(data, i);
@@ -187,7 +186,7 @@ public class DailyDataService {
             for (int i = 0; i < leadMeasures.size(); i++) {
                 LeadMeasure lm = leadMeasures.get(i);
                 // 오늘 생성된 리드매셔가 아직 입력 안됐으면 진행 중으로 간주
-                if (today.isBefore(lm.getCreatedAt().toLocalDate())) continue;
+                if (today.isBefore(wigCreatedDate)) continue;
                 Double actual = getLeadValue(todayDataForOverall, i);
                 if (actual == null) { todayAllAchieved = false; break; }
                 boolean achieved = lm.getGoalDirection() == GoalDirection.MAXIMIZE
@@ -206,8 +205,8 @@ public class DailyDataService {
             boolean anyChecked = false;
             for (int i = 0; i < leadMeasures.size(); i++) {
                 LeadMeasure lm = leadMeasures.get(i);
-                // 해당 날짜에 존재하지 않았던 리드매셔는 skip (실패로 보지 않음)
-                if (date.isBefore(lm.getCreatedAt().toLocalDate())) continue;
+                // WIG 생성일 이전의 리드매셔는 skip
+                if (date.isBefore(wigCreatedDate)) continue;
                 anyChecked = true;
                 Double actual = getLeadValue(data, i);
                 if (actual == null) { allAchieved = false; break; }

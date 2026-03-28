@@ -67,6 +67,7 @@ public class Wig {
      * orphanRemoval: 컬렉션에서 제거된 Lead Measure 자동 삭제
      */
     @OneToMany(mappedBy = "wig", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("id ASC")
     @Builder.Default // “빌더에서 값을 안 주면, 필드에 선언된 기본값을 써라”
     private List<LeadMeasure> leadMeasures = new ArrayList<>();
 
