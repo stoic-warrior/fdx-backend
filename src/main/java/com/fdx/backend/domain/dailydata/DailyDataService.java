@@ -8,6 +8,7 @@ import com.fdx.backend.domain.wig.WigRepository;
 import com.fdx.backend.dto.DailyDataRequest;
 import com.fdx.backend.dto.DailyDataResponse;
 import com.fdx.backend.dto.StreakResponse;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class DailyDataService {
     private final DailyDataRepository dailyDataRepository;
     private final WigRepository wigRepository;
     private final LeadMeasureRepository leadMeasureRepository;
+    private final EntityManager entityManager;
 
     /**
      * 특정 WIG의 모든 일간 데이터 조회
@@ -298,6 +300,7 @@ public class DailyDataService {
 
         // 기존 leadValues를 교체 (orphanRemoval=true로 기존 것은 자동 삭제)
         dailyData.getLeadValues().clear();
+        entityManager.flush(); // DELETE를 먼저 실행하여 unique constraint 위반 방지
         if (request.getLeadValues() != null) {
             for (Map.Entry<Long, Double> entry : request.getLeadValues().entrySet()) {
                 LeadMeasure lm = leadMeasureMap.get(entry.getKey());

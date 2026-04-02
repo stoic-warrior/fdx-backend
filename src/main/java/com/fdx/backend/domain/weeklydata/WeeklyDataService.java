@@ -6,6 +6,7 @@ import com.fdx.backend.domain.wig.Wig;
 import com.fdx.backend.domain.wig.WigRepository;
 import com.fdx.backend.dto.WeeklyDataRequest;
 import com.fdx.backend.dto.WeeklyDataResponse;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ public class WeeklyDataService {
     private final WeeklyDataRepository weeklyDataRepository;
     private final WigRepository wigRepository;
     private final LeadMeasureRepository leadMeasureRepository;
+    private final EntityManager entityManager;
 
     /**
      * 특정 WIG의 모든 주간 데이터 조회
@@ -134,6 +136,7 @@ public class WeeklyDataService {
 
         // 기존 leadValues를 교체 (orphanRemoval=true로 기존 것은 자동 삭제)
         weeklyData.getLeadValues().clear();
+        entityManager.flush(); // DELETE를 먼저 실행하여 unique constraint 위반 방지
         if (request.getLeadValues() != null) {
             for (Map.Entry<Long, Double> entry : request.getLeadValues().entrySet()) {
                 LeadMeasure lm = leadMeasureMap.get(entry.getKey());
