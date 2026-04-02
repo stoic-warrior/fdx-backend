@@ -1,5 +1,7 @@
 package com.fdx.backend.domain.weeklydata;
 
+import com.fdx.backend.domain.leadmeasure.LeadMeasure;
+import com.fdx.backend.domain.leadmeasure.LeadMeasureRepository;
 import com.fdx.backend.domain.wig.Wig;
 import com.fdx.backend.domain.wig.WigRepository;
 import com.fdx.backend.dto.WeeklyDataRequest;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -24,6 +27,7 @@ public class WeeklyDataService {
 
     private final WeeklyDataRepository weeklyDataRepository;
     private final WigRepository wigRepository;
+    private final LeadMeasureRepository leadMeasureRepository;
 
     /**
      * 특정 WIG의 모든 주간 데이터 조회
@@ -72,19 +76,34 @@ public class WeeklyDataService {
                             request.getWigId(), request.getWeek()));
         }
 
+        // LeadMeasure 엔티티 조회 (ID 검증)
+        Map<Long, LeadMeasure> leadMeasureMap = leadMeasureRepository.findByWigId(request.getWigId())
+                .stream().collect(Collectors.toMap(LeadMeasure::getId, lm -> lm));
+
         // 주간 데이터 생성
         WeeklyData weeklyData = WeeklyData.builder()
                 .week(request.getWeek())
                 .milestoneProgress(request.getMilestoneProgress())
                 .actual(request.getActual())
                 .target(request.getTarget())
-                .lead1(request.getLead1())
-                .lead2(request.getLead2())
-                .lead3(request.getLead3())
-                .lead4(request.getLead4())
-                .lead5(request.getLead5())
-                .wig(wig) // FK
+                .wig(wig)
                 .build();
+
+        // leadValues 매핑
+        if (request.getLeadValues() != null) {
+            for (Map.Entry<Long, Double> entry : request.getLeadValues().entrySet()) {
+                LeadMeasure lm = leadMeasureMap.get(entry.getKey());
+                if (lm == null) {
+                    throw new IllegalArgumentException("해당 Lead Measure를 찾을 수 없습니다: " + entry.getKey());
+                }
+                WeeklyLeadData wld = WeeklyLeadData.builder()
+                        .weeklyData(weeklyData)
+                        .leadMeasure(lm)
+                        .value(entry.getValue())
+                        .build();
+                weeklyData.getLeadValues().add(wld);
+            }
+        }
 
         WeeklyData savedWeeklyData = weeklyDataRepository.save(weeklyData);
         log.info("주간 데이터 생성 완료: id={}", savedWeeklyData.getId());
@@ -103,16 +122,32 @@ public class WeeklyDataService {
                 .orElseThrow(() -> new IllegalArgumentException(
                         "해당 주간 데이터를 찾을 수 없습니다: " + id));
 
-        // 엔티티 수정
+        // 기본 필드 수정
         weeklyData.setWeek(request.getWeek());
         weeklyData.setMilestoneProgress(request.getMilestoneProgress());
         weeklyData.setActual(request.getActual());
         weeklyData.setTarget(request.getTarget());
-        weeklyData.setLead1(request.getLead1());
-        weeklyData.setLead2(request.getLead2());
-        weeklyData.setLead3(request.getLead3());
-        weeklyData.setLead4(request.getLead4());
-        weeklyData.setLead5(request.getLead5());
+
+        // LeadMeasure 엔티티 조회
+        Map<Long, LeadMeasure> leadMeasureMap = leadMeasureRepository.findByWigId(weeklyData.getWig().getId())
+                .stream().collect(Collectors.toMap(LeadMeasure::getId, lm -> lm));
+
+        // 기존 leadValues를 교체 (orphanRemoval=true로 기존 것은 자동 삭제)
+        weeklyData.getLeadValues().clear();
+        if (request.getLeadValues() != null) {
+            for (Map.Entry<Long, Double> entry : request.getLeadValues().entrySet()) {
+                LeadMeasure lm = leadMeasureMap.get(entry.getKey());
+                if (lm == null) {
+                    throw new IllegalArgumentException("해당 Lead Measure를 찾을 수 없습니다: " + entry.getKey());
+                }
+                WeeklyLeadData wld = WeeklyLeadData.builder()
+                        .weeklyData(weeklyData)
+                        .leadMeasure(lm)
+                        .value(entry.getValue())
+                        .build();
+                weeklyData.getLeadValues().add(wld);
+            }
+        }
 
         log.info("주간 데이터 수정 완료: id={}", id);
 

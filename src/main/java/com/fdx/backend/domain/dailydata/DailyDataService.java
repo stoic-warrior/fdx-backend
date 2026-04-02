@@ -14,10 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -135,17 +132,15 @@ public class DailyDataService {
         }
 
         // lead measure별 streak 계산
-        // 오늘 달성 여부와 무관하게 오늘은 "진행 중"으로 간주 → 오늘 달성했으면 today부터, 미달성이면 yesterday부터 시작
         List<StreakResponse.LeadMeasureStreak> streaks = new ArrayList<>();
-        for (int i = 0; i < leadMeasures.size(); i++) {
-            LeadMeasure lm = leadMeasures.get(i);
+        for (LeadMeasure lm : leadMeasures) {
             int streak = 0;
 
             // 오늘 달성 여부 확인
             DailyData todayData = dataMap.get(today);
             boolean todayAchieved = false;
             if (todayData != null) {
-                Double todayActual = getLeadValue(todayData, i);
+                Double todayActual = getLeadValue(todayData, lm.getId());
                 todayAchieved = todayActual != null && (
                         lm.getGoalDirection() == GoalDirection.MAXIMIZE
                                 ? todayActual >= lm.getDailyTarget()
@@ -155,12 +150,10 @@ public class DailyDataService {
 
             LocalDate date = todayAchieved ? today : today.minusDays(1);
             while (true) {
-                // WIG 생성일 이전이면 streak 종료
                 if (date.isBefore(wigCreatedDate)) break;
                 DailyData data = dataMap.get(date);
                 if (data == null) break;
-                Double actual = getLeadValue(data, i);
-                // 생성 후 데이터가 null이면 미입력 = 실패
+                Double actual = getLeadValue(data, lm.getId());
                 if (actual == null) break;
                 boolean achieved = lm.getGoalDirection() == GoalDirection.MAXIMIZE
                         ? actual >= lm.getDailyTarget()
@@ -178,16 +171,13 @@ public class DailyDataService {
         }
 
         // 전체 동시달성 streak 계산
-        // 오늘 모두 달성했으면 today부터, 아니면 yesterday부터
         boolean todayAllAchieved = false;
         DailyData todayDataForOverall = dataMap.get(today);
         if (todayDataForOverall != null) {
             todayAllAchieved = true;
-            for (int i = 0; i < leadMeasures.size(); i++) {
-                LeadMeasure lm = leadMeasures.get(i);
-                // 오늘 생성된 리드매셔가 아직 입력 안됐으면 진행 중으로 간주
+            for (LeadMeasure lm : leadMeasures) {
                 if (today.isBefore(wigCreatedDate)) continue;
-                Double actual = getLeadValue(todayDataForOverall, i);
+                Double actual = getLeadValue(todayDataForOverall, lm.getId());
                 if (actual == null) { todayAllAchieved = false; break; }
                 boolean achieved = lm.getGoalDirection() == GoalDirection.MAXIMIZE
                         ? actual >= lm.getDailyTarget()
@@ -203,19 +193,16 @@ public class DailyDataService {
             if (data == null) break;
             boolean allAchieved = true;
             boolean anyChecked = false;
-            for (int i = 0; i < leadMeasures.size(); i++) {
-                LeadMeasure lm = leadMeasures.get(i);
-                // WIG 생성일 이전의 리드매셔는 skip
+            for (LeadMeasure lm : leadMeasures) {
                 if (date.isBefore(wigCreatedDate)) continue;
                 anyChecked = true;
-                Double actual = getLeadValue(data, i);
+                Double actual = getLeadValue(data, lm.getId());
                 if (actual == null) { allAchieved = false; break; }
                 boolean achieved = lm.getGoalDirection() == GoalDirection.MAXIMIZE
                         ? actual >= lm.getDailyTarget()
                         : actual <= lm.getDailyTarget();
                 if (!achieved) { allAchieved = false; break; }
             }
-            // 해당 날짜에 적용 가능한 리드매셔가 하나도 없으면 streak 중단
             if (!allAchieved || !anyChecked) break;
             overallStreak++;
             date = date.minusDays(1);
@@ -227,15 +214,16 @@ public class DailyDataService {
                 .build();
     }
 
-    private Double getLeadValue(DailyData data, int idx) {
-        return switch (idx) {
-            case 0 -> data.getLead1();
-            case 1 -> data.getLead2();
-            case 2 -> data.getLead3();
-            case 3 -> data.getLead4();
-            case 4 -> data.getLead5();
-            default -> null;
-        };
+    /**
+     * DailyData에서 특정 leadMeasureId의 값을 조회
+     * 정규화된 DailyLeadData에서 FK로 직접 조회
+     */
+    private Double getLeadValue(DailyData data, Long leadMeasureId) {
+        return data.getLeadValues().stream()
+                .filter(dld -> dld.getLeadMeasure().getId().equals(leadMeasureId))
+                .map(DailyLeadData::getValue)
+                .findFirst()
+                .orElse(null);
     }
 
     /**
@@ -245,30 +233,42 @@ public class DailyDataService {
     public DailyDataResponse createDailyData(DailyDataRequest request) {
         log.info("일간 데이터 생성: wigId={}, date={}", request.getWigId(), request.getDate());
 
-        // WIG 조회
         Wig wig = wigRepository.findById(request.getWigId())
                 .orElseThrow(() -> new IllegalArgumentException(
                         "해당 WIG를 찾을 수 없습니다: " + request.getWigId()));
 
-        // 중복 체크
         if (dailyDataRepository.existsByWigIdAndDate(request.getWigId(), request.getDate())) {
             throw new IllegalStateException(
                     String.format("WIG %d의 %s 데이터가 이미 존재합니다",
                             request.getWigId(), request.getDate()));
         }
 
-        // 일간 데이터 생성
+        // LeadMeasure 엔티티 조회 (ID 검증)
+        Map<Long, LeadMeasure> leadMeasureMap = leadMeasureRepository.findByWigId(request.getWigId())
+                .stream().collect(Collectors.toMap(LeadMeasure::getId, lm -> lm));
+
         DailyData dailyData = DailyData.builder()
                 .date(request.getDate())
                 .week(request.getWeek())
                 .dayOfWeek(request.getDayOfWeek())
-                .lead1(request.getLead1())
-                .lead2(request.getLead2())
-                .lead3(request.getLead3())
-                .lead4(request.getLead4())
-                .lead5(request.getLead5())
                 .wig(wig)
                 .build();
+
+        // leadValues 매핑
+        if (request.getLeadValues() != null) {
+            for (Map.Entry<Long, Double> entry : request.getLeadValues().entrySet()) {
+                LeadMeasure lm = leadMeasureMap.get(entry.getKey());
+                if (lm == null) {
+                    throw new IllegalArgumentException("해당 Lead Measure를 찾을 수 없습니다: " + entry.getKey());
+                }
+                DailyLeadData dld = DailyLeadData.builder()
+                        .dailyData(dailyData)
+                        .leadMeasure(lm)
+                        .value(entry.getValue())
+                        .build();
+                dailyData.getLeadValues().add(dld);
+            }
+        }
 
         DailyData savedDailyData = dailyDataRepository.save(dailyData);
         log.info("일간 데이터 생성 완료: id={}", savedDailyData.getId());
@@ -287,18 +287,33 @@ public class DailyDataService {
                 .orElseThrow(() -> new IllegalArgumentException(
                         "해당 일간 데이터를 찾을 수 없습니다: " + id));
 
-        // 엔티티 수정
+        // 기본 필드 수정
         dailyData.setDate(request.getDate());
         dailyData.setWeek(request.getWeek());
         dailyData.setDayOfWeek(request.getDayOfWeek());
-        dailyData.setLead1(request.getLead1());
-        dailyData.setLead2(request.getLead2());
-        dailyData.setLead3(request.getLead3());
-        dailyData.setLead4(request.getLead4());
-        dailyData.setLead5(request.getLead5());
+
+        // LeadMeasure 엔티티 조회
+        Map<Long, LeadMeasure> leadMeasureMap = leadMeasureRepository.findByWigId(dailyData.getWig().getId())
+                .stream().collect(Collectors.toMap(LeadMeasure::getId, lm -> lm));
+
+        // 기존 leadValues를 교체 (orphanRemoval=true로 기존 것은 자동 삭제)
+        dailyData.getLeadValues().clear();
+        if (request.getLeadValues() != null) {
+            for (Map.Entry<Long, Double> entry : request.getLeadValues().entrySet()) {
+                LeadMeasure lm = leadMeasureMap.get(entry.getKey());
+                if (lm == null) {
+                    throw new IllegalArgumentException("해당 Lead Measure를 찾을 수 없습니다: " + entry.getKey());
+                }
+                DailyLeadData dld = DailyLeadData.builder()
+                        .dailyData(dailyData)
+                        .leadMeasure(lm)
+                        .value(entry.getValue())
+                        .build();
+                dailyData.getLeadValues().add(dld);
+            }
+        }
 
         log.info("일간 데이터 수정 완료: id={}", id);
-
         return DailyDataResponse.from(dailyData);
     }
 

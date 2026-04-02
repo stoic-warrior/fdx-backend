@@ -9,10 +9,14 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Daily Data (일간 실적) 엔티티
  * Lead Measures의 일간 성과를 기록합니다
+ *
+ * 리드매셔 값은 DailyLeadData 테이블에서 (lead_measure_id, value)로 관리
  */
 @Entity
 @Table(name = "daily_data",
@@ -28,55 +32,23 @@ public class DailyData {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /**
-     * 날짜
-     */
     @Column(nullable = false)
     private LocalDate date;
 
-    /**
-     * 주차 (예: "W1", "W2")
-     * 조회 편의성을 위해 추가
-     */
     @Column(nullable = false, length = 10)
     private String week;
 
-    /**
-     * 요일 (예: "월", "화", "수")
-     * UI 표시용
-     */
     @Column(length = 10)
     private String dayOfWeek;
 
     /**
-     * Lead Measure 1 실적
-     * 예: 하루 코딩 시간 7시간
+     * 리드매셔별 실적 (정규화)
+     * DailyLeadData: (daily_data_id, lead_measure_id, value)
      */
-    @Column
-    private Double lead1;
+    @OneToMany(mappedBy = "dailyData", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<DailyLeadData> leadValues = new ArrayList<>();
 
-    /**
-     * Lead Measure 2 실적
-     * 예: 이력서 제출 1개
-     */
-    @Column
-    private Double lead2;
-
-    /** Lead Measure 3 실적 */
-    @Column
-    private Double lead3;
-
-    /** Lead Measure 4 실적 */
-    @Column
-    private Double lead4;
-
-    /** Lead Measure 5 실적 */
-    @Column
-    private Double lead5;
-
-    /**
-     * 소속 WIG (Many-to-One)
-     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "wig_id", nullable = false)
     private Wig wig;

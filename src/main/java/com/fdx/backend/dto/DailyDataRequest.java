@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * DailyData 생성/수정 요청 DTO
@@ -18,7 +20,6 @@ import java.time.LocalDate;
 @Builder
 public class DailyDataRequest {
 
-
     @NotNull(message = "날짜는 필수입니다")
     private LocalDate date;
 
@@ -27,12 +28,13 @@ public class DailyDataRequest {
 
     private String dayOfWeek;
 
-    // Lead Measures 실적
-    private Double lead1;
-    private Double lead2;
-    private Double lead3;
-    private Double lead4;
-    private Double lead5;
+    /**
+     * 리드매셔별 실적 값
+     * key: leadMeasureId, value: 실적 값
+     * 예: { 1: 7.0, 2: 1.0, 3: 60.0 }
+     */
+    @Builder.Default
+    private Map<Long, Double> leadValues = new HashMap<>();
 
     @NotNull(message = "WIG ID는 필수입니다")
     private Long wigId;

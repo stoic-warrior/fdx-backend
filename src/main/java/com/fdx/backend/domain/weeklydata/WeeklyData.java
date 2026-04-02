@@ -7,6 +7,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Weekly Data (주간 실적) 엔티티
@@ -14,9 +16,10 @@ import java.time.LocalDateTime;
  *
  * STATE 타입: milestoneProgress 사용
  * NUMERIC 타입: actual, target 사용
+ * 리드매셔 값은 WeeklyLeadData 테이블에서 (lead_measure_id, value)로 관리
  */
 @Entity
-@Table(name = "weekly_data", uniqueConstraints = @UniqueConstraint(columnNames = {"wig_id", "week"})) // 서비스에서 중복을 막지만, DB에서도 최후의 방어선
+@Table(name = "weekly_data", uniqueConstraints = @UniqueConstraint(columnNames = {"wig_id", "week"}))
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,62 +31,26 @@ public class WeeklyData {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /**
-     * 주차 (예: "W1", "W2", "W5")
-     */
     @Column(nullable = false, length = 10)
     private String week;
 
-    /**
-     * Milestone 진행률 (STATE 타입 WIG 전용)
-     * 0~100 사이의 값
-     */
     @Column
     private Double milestoneProgress;
 
-    /**
-     * 실제 달성값 (NUMERIC 타입 WIG 전용)
-     * 예: 체중 74.5kg
-     */
     @Column
     private Double actual;
 
-    /**
-     * 목표값 (NUMERIC 타입 WIG 전용)
-     * 예: 목표 체중 73kg
-     */
     @Column
     private Double target;
 
     /**
-     * Lead Measure 1 실적
-     * 예: 코딩 시간 35시간
+     * 리드매셔별 실적 (정규화)
+     * WeeklyLeadData: (weekly_data_id, lead_measure_id, value)
      */
-    @Column
-    private Double lead1;
+    @OneToMany(mappedBy = "weeklyData", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<WeeklyLeadData> leadValues = new ArrayList<>();
 
-    /**
-     * Lead Measure 2 실적
-     * 예: 이력서 제출 2개
-     */
-    @Column
-    private Double lead2;
-
-    /** Lead Measure 3 실적 */
-    @Column
-    private Double lead3;
-
-    /** Lead Measure 4 실적 */
-    @Column
-    private Double lead4;
-
-    /** Lead Measure 5 실적 */
-    @Column
-    private Double lead5;
-
-    /**
-     * 소속 WIG (Many-to-One)
-     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "wig_id", nullable = false)
     private Wig wig;
@@ -95,6 +62,5 @@ public class WeeklyData {
     @UpdateTimestamp
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
 
 }

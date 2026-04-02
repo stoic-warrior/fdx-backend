@@ -1,6 +1,7 @@
 package com.fdx.backend.dto;
 
 import com.fdx.backend.domain.dailydata.DailyData;
+import com.fdx.backend.domain.dailydata.DailyLeadData;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,6 +9,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * DailyData 응답 DTO
@@ -18,16 +22,18 @@ import java.time.LocalDateTime;
 @Builder
 public class DailyDataResponse {
 
-
     private Long id;
     private LocalDate date;
     private String week;
     private String dayOfWeek;
-    private Double lead1;
-    private Double lead2;
-    private Double lead3;
-    private Double lead4;
-    private Double lead5;
+
+    /**
+     * 리드매셔별 실적 값
+     * key: leadMeasureId, value: 실적 값
+     */
+    @Builder.Default
+    private Map<Long, Double> leadValues = new HashMap<>();
+
     private Long wigId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -36,16 +42,19 @@ public class DailyDataResponse {
      * Entity를 DTO로 변환하는 정적 팩토리 메서드
      */
     public static DailyDataResponse from(DailyData dailyData) {
+        Map<Long, Double> leadValues = dailyData.getLeadValues().stream()
+                .collect(Collectors.toMap(
+                        dld -> dld.getLeadMeasure().getId(),
+                        DailyLeadData::getValue,
+                        (v1, v2) -> v2
+                ));
+
         return DailyDataResponse.builder()
                 .id(dailyData.getId())
                 .date(dailyData.getDate())
                 .week(dailyData.getWeek())
                 .dayOfWeek(dailyData.getDayOfWeek())
-                .lead1(dailyData.getLead1())
-                .lead2(dailyData.getLead2())
-                .lead3(dailyData.getLead3())
-                .lead4(dailyData.getLead4())
-                .lead5(dailyData.getLead5())
+                .leadValues(leadValues)
                 .wigId(dailyData.getWig().getId())
                 .createdAt(dailyData.getCreatedAt())
                 .updatedAt(dailyData.getUpdatedAt())

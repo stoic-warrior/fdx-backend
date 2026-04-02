@@ -2,6 +2,8 @@ package com.fdx.backend.domain.leadmeasure;
 
 import com.fdx.backend.domain.GoalDirection;
 import com.fdx.backend.domain.LeadMeasureType;
+import com.fdx.backend.domain.dailydata.DailyLeadDataRepository;
+import com.fdx.backend.domain.weeklydata.WeeklyLeadDataRepository;
 import com.fdx.backend.domain.wig.Wig;
 import com.fdx.backend.domain.wig.WigRepository;
 import com.fdx.backend.dto.LeadMeasureRequest;
@@ -25,6 +27,8 @@ public class LeadMeasureService {
 
     private final LeadMeasureRepository leadMeasureRepository;
     private final WigRepository wigRepository;
+    private final DailyLeadDataRepository dailyLeadDataRepository;
+    private final WeeklyLeadDataRepository weeklyLeadDataRepository;
     private static final int MAX_LEAD_MEASURE_COUNT = 5; // Lead Measure 최대 갯수 제한
 
     /**
@@ -147,6 +151,7 @@ public class LeadMeasureService {
 
     /**
      * Lead Measure 삭제
+     * 연관된 DailyLeadData, WeeklyLeadData도 함께 삭제
      */
     @Transactional
     public void deleteLeadMeasure(Long id) {
@@ -155,6 +160,10 @@ public class LeadMeasureService {
         if (!leadMeasureRepository.existsById(id)) {
             throw new IllegalArgumentException("해당 Lead Measure를 찾을 수 없습니다: " + id);
         }
+
+        // 연관된 DailyLeadData, WeeklyLeadData 먼저 삭제
+        dailyLeadDataRepository.deleteByLeadMeasureId(id);
+        weeklyLeadDataRepository.deleteByLeadMeasureId(id);
 
         leadMeasureRepository.deleteById(id);
         log.info("Lead Measure 삭제 완료: id={}", id);

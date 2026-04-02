@@ -1,6 +1,6 @@
 -- 초기 테스트 데이터
 -- 애플리케이션 시작 시 자동으로 실행됩니다
--- lead1~lead5 확장 버전 (리드매셔 최대 5개 지원)
+-- 정규화: daily_lead_data, weekly_lead_data 테이블 사용
 
 -- ======================================
 -- Users (사용자)
@@ -27,6 +27,8 @@ VALUES ('체중 감량', '75', '68', '2025-06-30', 'NUMERIC', 'kg', 1, '2025-01-
 
 -- ======================================
 -- Lead Measures (선행지표)
+-- WIG1: id=1(코딩 시간), id=2(이력서 제출)
+-- WIG2: id=3(운동 시간), id=4(칼로리 섭취)
 -- ======================================
 
 -- WIG 1 (백엔드 개발자 취업)의 Lead Measures
@@ -89,78 +91,135 @@ INSERT INTO commitments (text, week, completed, wig_id, created_at, updated_at)
 VALUES ('야식 끊기', 'W1', FALSE, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- ======================================
--- Weekly Data (주간 실적)
--- lead3, lead4, lead5 컬럼 추가 (미사용 시 NULL)
+-- Weekly Data (주간 실적) - 정규화
 -- ======================================
 
 -- WIG 1 (백엔드 개발자 취업 - STATE 타입)의 주간 데이터
--- 리드매셔 2개만 사용 중이므로 lead3~5는 NULL
-INSERT INTO weekly_data (week, milestone_progress, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
-VALUES ('W1', 20, 35, 2, NULL, NULL, NULL, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO weekly_data (week, milestone_progress, wig_id, created_at, updated_at)
+VALUES ('W1', 20, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO weekly_data (week, milestone_progress, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
-VALUES ('W2', 40, 46, 3, NULL, NULL, NULL, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO weekly_data (week, milestone_progress, wig_id, created_at, updated_at)
+VALUES ('W2', 40, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- WIG 2 (체중 감량 - NUMERIC 타입)의 주간 데이터
--- 리드매셔 2개만 사용 중이므로 lead3~5는 NULL
-INSERT INTO weekly_data (week, actual, target, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
-VALUES ('W1', 74.5, 74, 320, 13500, NULL, NULL, NULL, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO weekly_data (week, actual, target, wig_id, created_at, updated_at)
+VALUES ('W1', 74.5, 74, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO weekly_data (week, actual, target, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
-VALUES ('W2', 73.8, 73, 385, 12950, NULL, NULL, NULL, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO weekly_data (week, actual, target, wig_id, created_at, updated_at)
+VALUES ('W2', 73.8, 73, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- ======================================
--- Daily Data (일간 실적)
--- lead3, lead4, lead5 컬럼 추가 (미사용 시 NULL)
--- WIG created_at이 2025-01-01이므로 그 이후 날짜로 설정
+-- Weekly Lead Data (주간 리드매셔 실적 - 정규화 테이블)
+-- weekly_data id: 1(WIG1-W1), 2(WIG1-W2), 3(WIG2-W1), 4(WIG2-W2)
+-- lead_measure id: 1(코딩시간), 2(이력서), 3(운동), 4(칼로리)
+-- ======================================
+
+-- WIG1-W1: 코딩 35시간, 이력서 2개
+INSERT INTO weekly_lead_data (weekly_data_id, lead_measure_id, lead_value) VALUES (1, 1, 35);
+INSERT INTO weekly_lead_data (weekly_data_id, lead_measure_id, lead_value) VALUES (1, 2, 2);
+
+-- WIG1-W2: 코딩 46시간, 이력서 3개
+INSERT INTO weekly_lead_data (weekly_data_id, lead_measure_id, lead_value) VALUES (2, 1, 46);
+INSERT INTO weekly_lead_data (weekly_data_id, lead_measure_id, lead_value) VALUES (2, 2, 3);
+
+-- WIG2-W1: 운동 320분, 칼로리 13500kcal
+INSERT INTO weekly_lead_data (weekly_data_id, lead_measure_id, lead_value) VALUES (3, 3, 320);
+INSERT INTO weekly_lead_data (weekly_data_id, lead_measure_id, lead_value) VALUES (3, 4, 13500);
+
+-- WIG2-W2: 운동 385분, 칼로리 12950kcal
+INSERT INTO weekly_lead_data (weekly_data_id, lead_measure_id, lead_value) VALUES (4, 3, 385);
+INSERT INTO weekly_lead_data (weekly_data_id, lead_measure_id, lead_value) VALUES (4, 4, 12950);
+
+-- ======================================
+-- Daily Data (일간 실적) - 정규화
 -- ======================================
 
 -- WIG 1의 W1 일간 데이터 (2025-01-06 ~ 2025-01-10, 월~금)
--- lead1=코딩 시간(시간), lead2=이력서 제출(개), lead3~5=미사용
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
-VALUES ('2025-01-06', 'W1', '월', 5, 0, NULL, NULL, NULL, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO daily_data (date, week, day_of_week, wig_id, created_at, updated_at)
+VALUES ('2025-01-06', 'W1', '월', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
-VALUES ('2025-01-07', 'W1', '화', 7, 1, NULL, NULL, NULL, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO daily_data (date, week, day_of_week, wig_id, created_at, updated_at)
+VALUES ('2025-01-07', 'W1', '화', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
-VALUES ('2025-01-08', 'W1', '수', 8, 0, NULL, NULL, NULL, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO daily_data (date, week, day_of_week, wig_id, created_at, updated_at)
+VALUES ('2025-01-08', 'W1', '수', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
-VALUES ('2025-01-09', 'W1', '목', 6, 1, NULL, NULL, NULL, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO daily_data (date, week, day_of_week, wig_id, created_at, updated_at)
+VALUES ('2025-01-09', 'W1', '목', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
-VALUES ('2025-01-10', 'W1', '금', 9, 0, NULL, NULL, NULL, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO daily_data (date, week, day_of_week, wig_id, created_at, updated_at)
+VALUES ('2025-01-10', 'W1', '금', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- WIG 2의 W1 일간 데이터 (2025-01-06 ~ 2025-01-10, 월~금)
--- lead1=운동 시간(분), lead2=칼로리 섭취(kcal), lead3~5=미사용
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
-VALUES ('2025-01-06', 'W1', '월', 60, 1750, NULL, NULL, NULL, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO daily_data (date, week, day_of_week, wig_id, created_at, updated_at)
+VALUES ('2025-01-06', 'W1', '월', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
-VALUES ('2025-01-07', 'W1', '화', 45, 1900, NULL, NULL, NULL, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO daily_data (date, week, day_of_week, wig_id, created_at, updated_at)
+VALUES ('2025-01-07', 'W1', '화', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
-VALUES ('2025-01-08', 'W1', '수', 70, 1700, NULL, NULL, NULL, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO daily_data (date, week, day_of_week, wig_id, created_at, updated_at)
+VALUES ('2025-01-08', 'W1', '수', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
-VALUES ('2025-01-09', 'W1', '목', 50, 1850, NULL, NULL, NULL, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO daily_data (date, week, day_of_week, wig_id, created_at, updated_at)
+VALUES ('2025-01-09', 'W1', '목', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
-VALUES ('2025-01-10', 'W1', '금', 95, 2300, NULL, NULL, NULL, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO daily_data (date, week, day_of_week, wig_id, created_at, updated_at)
+VALUES ('2025-01-10', 'W1', '금', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- WIG 2의 W2 일간 데이터 (2025-01-13 ~ 2025-01-17, 월~금)
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
-VALUES ('2025-01-13', 'W2', '월', 55, 1800, NULL, NULL, NULL, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO daily_data (date, week, day_of_week, wig_id, created_at, updated_at)
+VALUES ('2025-01-13', 'W2', '월', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
-VALUES ('2025-01-14', 'W2', '화', 80, 1650, NULL, NULL, NULL, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO daily_data (date, week, day_of_week, wig_id, created_at, updated_at)
+VALUES ('2025-01-14', 'W2', '화', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
-VALUES ('2025-01-15', 'W2', '수', 65, 1750, NULL, NULL, NULL, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO daily_data (date, week, day_of_week, wig_id, created_at, updated_at)
+VALUES ('2025-01-15', 'W2', '수', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
-VALUES ('2025-01-16', 'W2', '목', 90, 1700, NULL, NULL, NULL, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO daily_data (date, week, day_of_week, wig_id, created_at, updated_at)
+VALUES ('2025-01-16', 'W2', '목', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO daily_data (date, week, day_of_week, lead1, lead2, lead3, lead4, lead5, wig_id, created_at, updated_at)
-VALUES ('2025-01-17', 'W2', '금', 95, 2050, NULL, NULL, NULL, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO daily_data (date, week, day_of_week, wig_id, created_at, updated_at)
+VALUES ('2025-01-17', 'W2', '금', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+-- ======================================
+-- Daily Lead Data (일간 리드매셔 실적 - 정규화 테이블)
+-- daily_data id: 1~5(WIG1-W1), 6~10(WIG2-W1), 11~15(WIG2-W2)
+-- lead_measure id: 1(코딩시간), 2(이력서), 3(운동), 4(칼로리)
+-- ======================================
+
+-- WIG1 W1: 코딩시간(lm=1), 이력서(lm=2)
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (1, 1, 5);    -- 01-06 코딩 5시간
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (1, 2, 0);    -- 01-06 이력서 0개
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (2, 1, 7);    -- 01-07 코딩 7시간
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (2, 2, 1);    -- 01-07 이력서 1개
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (3, 1, 8);    -- 01-08 코딩 8시간
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (3, 2, 0);    -- 01-08 이력서 0개
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (4, 1, 6);    -- 01-09 코딩 6시간
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (4, 2, 1);    -- 01-09 이력서 1개
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (5, 1, 9);    -- 01-10 코딩 9시간
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (5, 2, 0);    -- 01-10 이력서 0개
+
+-- WIG2 W1: 운동시간(lm=3), 칼로리(lm=4)
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (6, 3, 60);    -- 01-06 운동 60분
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (6, 4, 1750);  -- 01-06 칼로리 1750
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (7, 3, 45);    -- 01-07 운동 45분
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (7, 4, 1900);  -- 01-07 칼로리 1900
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (8, 3, 70);    -- 01-08 운동 70분
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (8, 4, 1700);  -- 01-08 칼로리 1700
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (9, 3, 50);    -- 01-09 운동 50분
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (9, 4, 1850);  -- 01-09 칼로리 1850
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (10, 3, 95);   -- 01-10 운동 95분
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (10, 4, 2300); -- 01-10 칼로리 2300
+
+-- WIG2 W2: 운동시간(lm=3), 칼로리(lm=4)
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (11, 3, 55);   -- 01-13 운동 55분
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (11, 4, 1800); -- 01-13 칼로리 1800
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (12, 3, 80);   -- 01-14 운동 80분
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (12, 4, 1650); -- 01-14 칼로리 1650
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (13, 3, 65);   -- 01-15 운동 65분
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (13, 4, 1750); -- 01-15 칼로리 1750
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (14, 3, 90);   -- 01-16 운동 90분
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (14, 4, 1700); -- 01-16 칼로리 1700
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (15, 3, 95);   -- 01-17 운동 95분
+INSERT INTO daily_lead_data (daily_data_id, lead_measure_id, lead_value) VALUES (15, 4, 2050); -- 01-17 칼로리 2050
