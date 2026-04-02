@@ -74,7 +74,9 @@ public class LeadMeasureService {
                 : LeadMeasureType.NUMERIC;
 
         Double dailyTarget = request.getDailyTarget();
-        Double weeklyTarget = request.getWeeklyTarget();
+        Double weeklyTarget = request.getWeeklyTarget() != null
+                ? request.getWeeklyTarget()
+                : (dailyTarget != null ? dailyTarget * 7 : null);
         String unit = request.getUnit();
         GoalDirection direction = request.getGoalDirection() != null
                 ? request.getGoalDirection()
@@ -134,7 +136,9 @@ public class LeadMeasureService {
             leadMeasure.setGoalDirection(GoalDirection.MAXIMIZE);
         } else {
             leadMeasure.setDailyTarget(request.getDailyTarget());
-            leadMeasure.setWeeklyTarget(request.getWeeklyTarget());
+            leadMeasure.setWeeklyTarget(request.getWeeklyTarget() != null
+                    ? request.getWeeklyTarget()
+                    : (request.getDailyTarget() != null ? request.getDailyTarget() * 7 : null));
             leadMeasure.setUnit(request.getUnit());
             if (request.getGoalDirection() != null) {
                 leadMeasure.setGoalDirection(request.getGoalDirection());
