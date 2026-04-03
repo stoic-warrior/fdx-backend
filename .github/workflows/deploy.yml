@@ -55,5 +55,5 @@ jobs:
               --restart unless-stopped \
               fdx-backend
             
-            # 정리: 사용하지 않는 이미지 삭제
-            docker image prune -f
+            # 정리: 사용하지 않는 이미지 및 빌드 캐시 삭제
+            docker system prune -f
